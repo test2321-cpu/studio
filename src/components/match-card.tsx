@@ -52,7 +52,7 @@ export function MatchCard({ match }: { match: Match }) {
             <CardFooter>
                  {dynamicStatus === 'Upcoming' ? (
                     <div className="w-full">
-                      <CountdownTimer targetDate={match.dateTime} />
+                      <CountdownTimer targetDate={match.startTime} />
                     </div>
                   ) : (
                     <p className="text-xs text-primary">

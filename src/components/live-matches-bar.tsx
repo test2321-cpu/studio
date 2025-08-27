@@ -52,7 +52,7 @@ export function LiveMatchesBar() {
                     </div>
                     {dynamicStatus === 'Upcoming' ? (
                       <div className="mt-3">
-                        <CountdownTimer targetDate={match.dateTime} />
+                        <CountdownTimer targetDate={match.startTime} />
                       </div>
                     ) : (
                       <p className="text-xs text-primary mt-3">

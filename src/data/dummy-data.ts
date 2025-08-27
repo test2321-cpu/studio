@@ -1,18 +1,30 @@
 
 import type { Article, Match, RankingTeam, MatchDetailsData } from '@/lib/types';
 
-const getFutureDate = (days: number, hours: number, minutes: number): string => {
+const getFutureDateISO = (days: number, hours: number, minutes: number): string => {
   const date = new Date();
   date.setDate(date.getDate() + days);
   date.setHours(hours, minutes, 0, 0);
   return date.toISOString();
 }
 
-const getPastDate = (days: number): string => {
+const getPastDateISO = (days: number, hours: number = 0): string => {
   const date = new Date();
   date.setDate(date.getDate() - days);
+  if (hours) {
+    date.setHours(date.getHours() - hours);
+  }
   return date.toISOString();
 }
+
+const getLiveMatchTimes = () => {
+    const now = new Date();
+    const startTime = new Date(now.getTime() - 1 * 60 * 60 * 1000); // 1 hour ago
+    const endTime = new Date(now.getTime() + 2.5 * 60 * 60 * 1000); // 2.5 hours from now
+    return { startTime: startTime.toISOString(), endTime: endTime.toISOString() };
+}
+
+const liveMatchTimes = getLiveMatchTimes();
 
 export const matches: Match[] = [
   {
@@ -24,7 +36,8 @@ export const matches: Match[] = [
       { name: 'AUS', score: '188/5 (20 ov)', flag: '🇦🇺' },
     ],
     date: 'Today',
-    dateTime: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(), // Set to 1 hour ago to be 'Live'
+    startTime: liveMatchTimes.startTime,
+    endTime: liveMatchTimes.endTime,
     result: 'India need 39 runs in 27 balls.',
   },
   {
@@ -36,7 +49,8 @@ export const matches: Match[] = [
       { name: 'SA', score: '208/4', flag: '🇿🇦' },
     ],
     date: 'Yesterday',
-    dateTime: getPastDate(1),
+    startTime: getPastDateISO(1, 4),
+    endTime: getPastDateISO(1, 0),
     result: 'South Africa won by 6 wickets.',
   },
   {
@@ -48,7 +62,8 @@ export const matches: Match[] = [
       { name: 'NZ', flag: '🇳🇿' },
     ],
     date: 'Tomorrow, 7:30 PM',
-    dateTime: getFutureDate(1, 19, 30),
+    startTime: getFutureDateISO(1, 19, 30),
+    endTime: getFutureDateISO(1, 23, 0),
   },
   {
     id: 4,
@@ -58,8 +73,9 @@ export const matches: Match[] = [
       { name: 'BAN', flag: '🇧🇩' },
       { name: 'SL', flag: '🇱🇰' },
     ],
-    date: '28 June, 3:00 PM',
-    dateTime: getFutureDate(2, 15, 0),
+    date: '2 days from now, 3:00 PM',
+    startTime: getFutureDateISO(2, 15, 0),
+    endTime: getFutureDateISO(2, 18, 30),
   },
   {
     id: 5,
@@ -70,7 +86,8 @@ export const matches: Match[] = [
         { name: 'AFG', score: '179/5', flag: '🇦🇫' },
     ],
     date: '2 days ago',
-    dateTime: getPastDate(2),
+    startTime: getPastDateISO(2, 4),
+    endTime: getPastDateISO(2, 0),
     result: 'Afghanistan won by 5 wickets.',
   },
 ];

@@ -114,7 +114,7 @@ export default function MatchPage({ params }: { params: { id: string } }) {
                         {dynamicStatus === 'Upcoming' ? (
                             <div className="flex flex-col items-center gap-2 mb-3">
                                 <span className="text-sm font-semibold text-muted-foreground">Match Starts In</span>
-                                <CountdownTimer targetDate={currentMatch.dateTime} />
+                                <CountdownTimer targetDate={currentMatch.startTime} />
                             </div>
                         ) : (
                             <>

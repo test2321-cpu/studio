@@ -8,7 +8,8 @@ export interface Match {
     { name: string; score?: string; flag: string }
   ];
   date: string;
-  dateTime: string;
+  startTime: string;
+  endTime: string;
   result?: string;
 }
 
