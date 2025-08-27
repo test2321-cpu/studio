@@ -3,10 +3,10 @@ import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { SectionWrapper } from '@/components/section-wrapper';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { matchDetails } from '@/data/dummy-data';
+import { matchDetails, matches as allMatches } from '@/data/dummy-data';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Check, Calendar } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 
 const TeamDisplay = ({ name, flag }: { name: string, flag: string }) => (
@@ -46,8 +46,26 @@ const RecentMatch = ({ match }: { match: any }) => (
 );
 
 
-export default function MatchPage() {
-    const { details, teams, countdown, poll, recentMatches } = matchDetails;
+export default function MatchPage({ params }: { params: { id: string } }) {
+    const matchId = parseInt(params.id, 10);
+    const currentMatch = allMatches.find(m => m.id === matchId);
+
+    if (!currentMatch) {
+      return (
+        <div className="flex flex-col min-h-screen">
+          <Header />
+          <main className="flex-grow flex items-center justify-center">
+            <h1 className="text-2xl font-bold">Match not found</h1>
+          </main>
+          <Footer />
+        </div>
+      );
+    }
+    
+    // Using matchDetails for static content and currentMatch for dynamic content
+    const { details, poll, recentMatches } = matchDetails;
+    const teams = { a: currentMatch.teams[0], b: currentMatch.teams[1] };
+
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -55,8 +73,8 @@ export default function MatchPage() {
             <main className="flex-grow bg-gray-50/50">
                 <SectionWrapper className="bg-card border-b py-6 md:py-8">
                     <div className="text-center">
-                        <p className="text-sm text-muted-foreground">{details.date}</p>
-                        <h1 className="text-xl md:text-2xl font-bold mt-1">{details.series}</h1>
+                        <p className="text-sm text-muted-foreground">{currentMatch.date}</p>
+                        <h1 className="text-xl md:text-2xl font-bold mt-1">{currentMatch.tournament}</h1>
                         <p className="text-sm text-muted-foreground mt-1">{details.venue}</p>
                     </div>
 
@@ -68,9 +86,9 @@ export default function MatchPage() {
 
                     <div className="text-center">
                         <div className="bg-amber-100 text-amber-800 inline-block px-4 py-1 rounded-full text-sm font-semibold mb-3">
-                            {details.status}
+                            {currentMatch.status}
                         </div>
-                        {countdown && <p className="text-lg text-muted-foreground">{countdown}</p>}
+                        {currentMatch.result && <p className="text-lg text-muted-foreground">{currentMatch.result}</p>}
                     </div>
                 </SectionWrapper>
 
@@ -127,13 +145,13 @@ export default function MatchPage() {
                                     <CardTitle>Match Details</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <MatchInfo label="Match" value={details.match} />
-                                    <MatchInfo label="Series" value={details.seriesFull} />
+                                    <MatchInfo label="Match" value={`${teams.a.name} vs ${teams.b.name}`} />
+                                    <MatchInfo label="Series" value={currentMatch.tournament} />
                                     <MatchInfo label="Toss" value={details.toss} />
                                     <MatchInfo label="Season" value={details.season} />
                                     <MatchInfo label="Format" value={details.format} />
                                     <MatchInfo label="Venue" value={details.venue} />
-                                    <MatchInfo label="Match Date" value={details.matchDate} />
+                                    <MatchInfo label="Match Date" value={currentMatch.date} />
                                 </CardContent>
                             </Card>
                         </TabsContent>

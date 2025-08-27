@@ -24,7 +24,7 @@ export function LiveMatchesBar() {
         <div className="flex items-center space-x-4 overflow-x-auto py-3 no-scrollbar">
           {matches.map((match, index) => (
             <div key={match.id} className="flex items-center space-x-4">
-              <Link href="/match" className="hover:bg-accent/50 transition-colors rounded-lg">
+              <Link href={`/match/${match.id}`} className="hover:bg-accent/50 transition-colors rounded-lg">
                 <Card className="p-3 shadow-none border-0 min-w-[300px] md:min-w-[320px] bg-transparent">
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-xs text-muted-foreground">{match.tournament}</p>
