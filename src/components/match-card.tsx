@@ -4,9 +4,13 @@ import type { Match } from '@/lib/types';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CountdownTimer } from './countdown-timer';
+import { getDynamicMatchStatus } from '@/lib/utils';
+
 
 export function MatchCard({ match }: { match: Match }) {
-  const getStatusBadge = (status: string) => {
+  const dynamicStatus = getDynamicMatchStatus(match);
+
+  const getStatusBadge = (status: Match['status']) => {
     switch (status) {
       case 'Live':
         return <Badge variant="destructive">Live</Badge>;
@@ -27,7 +31,7 @@ export function MatchCard({ match }: { match: Match }) {
                     <p className="text-xs text-muted-foreground font-semibold">
                       {match.tournament}
                     </p>
-                    {getStatusBadge(match.status)}
+                    {getStatusBadge(dynamicStatus)}
                 </div>
                  <p className="text-xs text-muted-foreground pt-1">
                     {match.date.replace(/, \d{1,2}:\d{2} [AP]M$/, '')}
@@ -46,13 +50,13 @@ export function MatchCard({ match }: { match: Match }) {
                 </div>
             </CardContent>
             <CardFooter>
-                 {match.status === 'Upcoming' ? (
+                 {dynamicStatus === 'Upcoming' ? (
                     <div className="w-full">
                       <CountdownTimer targetDate={match.dateTime} />
                     </div>
                   ) : (
                     <p className="text-xs text-primary">
-                      {match.result}
+                      {dynamicStatus === 'Recent' ? match.result : 'Match is live. Stay tuned!'}
                     </p>
                   )}
             </CardFooter>

@@ -8,17 +8,23 @@ const getFutureDate = (days: number, hours: number, minutes: number): string => 
   return date.toISOString();
 }
 
+const getPastDate = (days: number): string => {
+  const date = new Date();
+  date.setDate(date.getDate() - days);
+  return date.toISOString();
+}
+
 export const matches: Match[] = [
   {
     id: 1,
-    status: 'Live',
+    status: 'Live', // This will be dynamically overridden
     tournament: 'T20 World Cup',
     teams: [
       { name: 'IND', score: '150/2 (15.3 ov)', flag: '🇮🇳' },
       { name: 'AUS', score: '188/5 (20 ov)', flag: '🇦🇺' },
     ],
     date: 'Today',
-    dateTime: new Date().toISOString(),
+    dateTime: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(), // Set to 1 hour ago to be 'Live'
     result: 'India need 39 runs in 27 balls.',
   },
   {
@@ -30,7 +36,7 @@ export const matches: Match[] = [
       { name: 'SA', score: '208/4', flag: '🇿🇦' },
     ],
     date: 'Yesterday',
-    dateTime: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+    dateTime: getPastDate(1),
     result: 'South Africa won by 6 wickets.',
   },
   {
@@ -64,7 +70,7 @@ export const matches: Match[] = [
         { name: 'AFG', score: '179/5', flag: '🇦🇫' },
     ],
     date: '2 days ago',
-    dateTime: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    dateTime: getPastDate(2),
     result: 'Afghanistan won by 5 wickets.',
   },
 ];
