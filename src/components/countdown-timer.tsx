@@ -44,22 +44,33 @@ export function CountdownTimer({ targetDate, className }: CountdownTimerProps) {
     if (!isClient) {
         return null;
     }
+    
+    const parts = [];
+    if (timeLeft.days > 0) {
+        parts.push(`${timeLeft.days} days`);
+    }
+    if (timeLeft.hours > 0) {
+        parts.push(`${timeLeft.hours} hours`);
+    }
+    if (timeLeft.minutes > 0) {
+        parts.push(`${timeLeft.minutes} min`);
+    }
 
-    const timerComponents = Object.entries(timeLeft).map(([interval, value]) => {
-        if (value > 0 || (timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds >= 0)) {
-             return (
-                <div key={interval} className="flex flex-col items-center">
-                    <span className="font-semibold text-xs">{String(value).padStart(2, '0')}</span>
-                    <span className="text-muted-foreground uppercase" style={{ fontSize: '0.5rem' }}>{interval}</span>
-                </div>
-            );
-        }
-        return null;
-    }).filter(Boolean);
-
-    return timerComponents.length > 0 ? (
-        <div className={`flex items-start justify-center gap-2 md:gap-3 text-center ${className}`}>
-            {timerComponents}
+    if (parts.length === 0 && timeLeft.seconds > 0) {
+       return (
+         <div className={`text-center text-xs text-muted-foreground ${className}`}>
+            Starting soon...
         </div>
-    ) : null;
+       )
+    }
+    
+    if (parts.length === 0) {
+        return null;
+    }
+
+    return (
+         <div className={`text-center text-xs text-muted-foreground font-semibold ${className}`}>
+            {parts.join(' ')}
+        </div>
+    );
 }
