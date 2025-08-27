@@ -49,8 +49,8 @@ export function CountdownTimer({ targetDate, className }: CountdownTimerProps) {
         if (value > 0 || (timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0)) {
             return (
                 <div key={interval} className="flex flex-col items-center">
-                    <span className="font-bold text-base">{String(value).padStart(2, '0')}</span>
-                    <span className="text-xs uppercase">{interval}</span>
+                    <span className="font-bold text-sm">{String(value).padStart(2, '0')}</span>
+                    <span className="text-xs uppercase" style={{ fontSize: '0.6rem' }}>{interval}</span>
                 </div>
             );
         }
@@ -58,7 +58,7 @@ export function CountdownTimer({ targetDate, className }: CountdownTimerProps) {
     }).filter(Boolean);
 
     return timerComponents.length > 0 ? (
-        <div className={`flex items-center justify-center gap-3 md:gap-4 text-center ${className}`}>
+        <div className={`flex items-center justify-center gap-2 md:gap-3 text-center ${className}`}>
             {timerComponents}
         </div>
     ) : null;
