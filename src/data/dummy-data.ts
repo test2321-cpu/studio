@@ -381,7 +381,7 @@ const matchDetailsData: { [key: number]: MatchDetailsData } = {
     countdown: 'Match starts tomorrow',
     poll: { a: { votes: 620, percentage: 55 }, b: { votes: 505, percentage: 45 } },
     recentMatches: [
-       { id: 1, type: "T20I", date: "25 Jun 2024", status: "Completed", teams: [{ name: "Pakistan", flag: "pakistan", score: "159/8" }, { name: "Ireland", flag: "ireland', score: '160/7' }], result: "Ireland won by 3 wickets" },
+       { id: 1, type: "T20I", date: "25 Jun 2024", status: "Completed", teams: [{ name: "Pakistan", flag: "pakistan", score: "159/8" }, { name: "Ireland", flag: "ireland", score: "160/7" }], result: "Ireland won by 3 wickets" },
        { id: 2, type: "T20I", date: "23 Jun 2024", status: "Completed", teams: [{ name: "Pakistan", flag: "pakistan", score: "182/6" }, { name: "Canada", flag: "canada", score: "178/7" }], result: "Pakistan won by 4 runs" },
        { id: 3, type: "T20I", date: "21 Jun 2024", status: "Completed", teams: [{ name: "Pakistan", flag: "pakistan", score: "137/7" }, { name: "USA", flag: "united-states-of-america", score: "138/5" }], result: "USA won by 5 wickets" },
     ],
