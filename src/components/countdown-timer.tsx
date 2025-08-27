@@ -46,10 +46,10 @@ export function CountdownTimer({ targetDate, className }: CountdownTimerProps) {
     }
 
     const timerComponents = Object.entries(timeLeft).map(([interval, value]) => {
-        if (value > 0) {
+        if (value > 0 || (timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0)) {
             return (
                 <div key={interval} className="flex flex-col items-center">
-                    <span className="font-bold text-lg">{String(value).padStart(2, '0')}</span>
+                    <span className="font-bold text-base">{String(value).padStart(2, '0')}</span>
                     <span className="text-xs uppercase">{interval}</span>
                 </div>
             );
