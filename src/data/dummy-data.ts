@@ -1,4 +1,5 @@
-import type { Article, Match, RankingTeam } from '@/lib/types';
+
+import type { Article, Match, RankingTeam, MatchDetailsData } from '@/lib/types';
 
 export const matches: Match[] = [
   {
@@ -222,3 +223,41 @@ export const rankings_test: RankingTeam[] = [
   { rank: 4, team: 'South Africa', rating: 104, flag: '🇿🇦' },
   { rank: 5, team: 'New Zealand', rating: 100, flag: '🇳🇿' },
 ];
+
+export const matchDetails: MatchDetailsData = {
+  details: {
+    date: "Thursday, 25 Sep 2025, 8:45 PM",
+    series: "Nepal v West Indies T20I Series 2025 - 1st T20I",
+    venue: "Sharjah Cricket Stadium, Sharjah",
+    match: "1st T20I",
+    seriesFull: "Nepal v West Indies T20I Series 2025\nNepal tour of United Arab Emirates 2025",
+    toss: "Toss information not available",
+    season: "2025",
+    format: "T20I",
+    matchDate: "September 25, 2025",
+    status: "Upcoming",
+  },
+  teams: {
+    a: { name: 'Nepal', flag: '🇳🇵' },
+    b: { name: 'West Indies', flag: '🏝️' },
+  },
+  countdown: "Match starts in 28 days 23 hours 42 minutes",
+  poll: {
+    a: { votes: 133, percentage: 72 },
+    b: { votes: 51, percentage: 28 },
+  },
+  recentMatches: [
+    {
+      id: 1,
+      type: "ODI",
+      date: "Thu, 22 Jun 2023",
+      status: "Completed",
+      teams: [
+        { name: "West Indies", flag: "🏝️", score: "339/7 (50.0)" },
+        { name: "Nepal", flag: "🇳🇵", score: "238 (49.4)" },
+      ],
+      result: "West Indies won by 101 runs",
+    },
+    // Add more recent matches if needed
+  ],
+};

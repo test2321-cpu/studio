@@ -1,3 +1,4 @@
+
 export interface Match {
   id: number;
   status: 'Live' | 'Upcoming' | 'Recent';
@@ -26,4 +27,40 @@ export interface RankingTeam {
   team: string;
   rating: number;
   flag: string;
+}
+
+export interface MatchDetailsData {
+  details: {
+    date: string;
+    series: string;
+    venue: string;
+    match: string;
+    seriesFull: string;
+    toss: string;
+    season: string;
+    format: string;
+    matchDate: string;
+    status: string;
+  };
+  teams: {
+    a: { name: string; flag: string; };
+    b: { name: string; flag: string; };
+  };
+  countdown: string;
+  poll: {
+    a: { votes: number; percentage: number; };
+    b: { votes: number; percentage: number; };
+  };
+  recentMatches: Array<{
+    id: number;
+    type: string;
+    date: string;
+    status: string;
+    teams: Array<{
+      name: string;
+      flag: string;
+      score: string;
+    }>;
+    result: string;
+  }>;
 }
