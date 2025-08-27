@@ -29,6 +29,11 @@ export interface RankingTeam {
   flag: string;
 }
 
+export interface Player {
+  name: string;
+  role: 'Batsman' | 'Bowler' | 'All-rounder' | 'Wicketkeeper';
+}
+
 export interface MatchDetailsData {
   details: {
     date: string;
@@ -63,4 +68,18 @@ export interface MatchDetailsData {
     }>;
     result: string;
   }>;
+  playingXI: Array<{
+    team: string;
+    players: Player[];
+  }>;
+  headToHead: {
+    summary: string;
+    last5: Array<{
+      teams: [
+        { name: string; score: string },
+        { name: string; score: string }
+      ];
+      result: string;
+    }>;
+  }
 }

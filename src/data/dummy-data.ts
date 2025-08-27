@@ -224,40 +224,84 @@ export const rankings_test: RankingTeam[] = [
   { rank: 5, team: 'New Zealand', rating: 100, flag: '🇳🇿' },
 ];
 
-export const matchDetails: MatchDetailsData = {
-  details: {
-    date: "Thursday, 25 Sep 2025, 8:45 PM",
-    series: "Nepal v West Indies T20I Series 2025 - 1st T20I",
-    venue: "Sharjah Cricket Stadium, Sharjah",
-    match: "1st T20I",
-    seriesFull: "Nepal v West Indies T20I Series 2025\nNepal tour of United Arab Emirates 2025",
-    toss: "Toss information not available",
-    season: "2025",
-    format: "T20I",
-    matchDate: "September 25, 2025",
-    status: "Upcoming",
-  },
-  teams: {
-    a: { name: 'Nepal', flag: '🇳🇵' },
-    b: { name: 'West Indies', flag: '🏝️' },
-  },
-  countdown: "Match starts in 28 days 23 hours 42 minutes",
-  poll: {
-    a: { votes: 133, percentage: 72 },
-    b: { votes: 51, percentage: 28 },
-  },
-  recentMatches: [
-    {
-      id: 1,
-      type: "ODI",
-      date: "Thu, 22 Jun 2023",
-      status: "Completed",
-      teams: [
-        { name: "West Indies", flag: "🏝️", score: "339/7 (50.0)" },
-        { name: "Nepal", flag: "🇳🇵", score: "238 (49.4)" },
-      ],
-      result: "West Indies won by 101 runs",
+const matchDetailsData: { [key: number]: MatchDetailsData } = {
+  1: {
+    details: {
+      date: 'Today',
+      series: 'T20 World Cup',
+      venue: 'Kensington Oval, Barbados',
+      match: 'Final',
+      seriesFull: 'ICC Men\'s T20 World Cup 2024',
+      toss: 'Australia won the toss and elected to field.',
+      season: '2024',
+      format: 'T20I',
+      matchDate: 'June 29, 2024',
+      status: 'Live',
     },
-    // Add more recent matches if needed
-  ],
+    teams: {
+      a: { name: 'India', flag: '🇮🇳' },
+      b: { name: 'Australia', flag: '🇦🇺' },
+    },
+    countdown: 'Match is live',
+    poll: {
+      a: { votes: 840, percentage: 65 },
+      b: { votes: 455, percentage: 35 },
+    },
+    recentMatches: [
+       { id: 1, type: "T20I", date: "24 Jun 2024", status: "Completed", teams: [{ name: "Australia", flag: "🇦🇺", score: "205/5" }, { name: "India", flag: "🇮🇳", score: "181/7" }], result: "Australia won by 24 runs" },
+       { id: 2, type: "T20I", date: "22 Jun 2024", status: "Completed", teams: [{ name: "Afghanistan", flag: "🇦🇫", score: "148/6" }, { name: "Australia", flag: "🇦🇺", score: "127" }], result: "Afghanistan won by 21 runs" },
+       { id: 3, type: "T20I", date: "20 Jun 2024", status: "Completed", teams: [{ name: "Australia", flag: "🇦🇺", score: "140/8" }, { name: "Bangladesh", flag: "🇧🇩", score: "100/8" }], result: "Australia won by 28 runs (DLS method)" },
+    ],
+    playingXI: [
+      {
+        team: 'India',
+        players: [
+          { name: 'Rohit Sharma', role: 'Batsman' },
+          { name: 'Virat Kohli', role: 'Batsman' },
+          { name: 'Rishabh Pant', role: 'Wicketkeeper' },
+          { name: 'Suryakumar Yadav', role: 'Batsman' },
+          { name: 'Axar Patel', role: 'All-rounder' },
+          { name: 'Shivam Dube', role: 'All-rounder' },
+          { name: 'Hardik Pandya', role: 'All-rounder' },
+          { name: 'Ravindra Jadeja', role: 'All-rounder' },
+          { name: 'Arshdeep Singh', role: 'Bowler' },
+          { name: 'Kuldeep Yadav', role: 'Bowler' },
+          { name: 'Jasprit Bumrah', role: 'Bowler' },
+        ],
+      },
+      {
+        team: 'Australia',
+        players: [
+          { name: 'Travis Head', role: 'Batsman' },
+          { name: 'David Warner', role: 'Batsman' },
+          { name: 'Mitchell Marsh', role: 'All-rounder' },
+          { name: 'Glenn Maxwell', role: 'All-rounder' },
+          { name: 'Marcus Stoinis', role: 'All-rounder' },
+          { name: 'Tim David', role: 'Batsman' },
+          { name: 'Matthew Wade', role: 'Wicketkeeper' },
+          { name: 'Pat Cummins', role: 'Bowler' },
+          { name: 'Mitchell Starc', role: 'Bowler' },
+          { name: 'Adam Zampa', role: 'Bowler' },
+          { name: 'Josh Hazlewood', role: 'Bowler' },
+        ],
+      },
+    ],
+    headToHead: {
+      summary: 'India and Australia have a fierce rivalry. In T20Is, they have played 31 times, with India winning 19 and Australia 11.',
+      last5: [
+        { teams: [{ name: 'IND', score: '181/7' }, { name: 'AUS', score: '205/5' }], result: 'Australia won by 24 runs' },
+        { teams: [{ name: 'IND', score: '140/8' }, { name: 'AUS', score: '141/5' }], result: 'Australia won by 5 wickets' },
+        { teams: [{ name: 'IND', score: '174/9' }, { name: 'AUS', score: '154/7' }], result: 'India won by 20 runs' },
+        { teams: [{ name: 'IND', score: '235/4' }, { name: 'AUS', score: '191/9' }], result: 'India won by 44 runs' },
+        { teams: [{ name: 'IND', score: '208/8' }, { name: 'AUS', score: '209/8' }], result: 'Australia won by 2 wickets' },
+      ],
+    }
+  },
+  // Add details for other matches here, using a similar structure.
+  // For brevity, I am adding only one. More can be added.
+};
+
+// Function to get match details by ID
+export const getMatchDetailsById = (id: number): MatchDetailsData | undefined => {
+  return matchDetailsData[id] || matchDetailsData[1]; // Return details for match 1 as a fallback
 };

@@ -3,11 +3,13 @@ import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { SectionWrapper } from '@/components/section-wrapper';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { matchDetails, matches as allMatches } from '@/data/dummy-data';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getMatchDetailsById, matches as allMatches } from '@/data/dummy-data';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Check } from 'lucide-react';
+import { Check, Users, History, Swords } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { Separator } from '@/components/ui/separator';
+import type { Player } from '@/lib/types';
 
 const TeamDisplay = ({ name, flag }: { name: string, flag: string }) => (
     <div className="flex items-center text-3xl md:text-5xl font-bold gap-4">
@@ -45,12 +47,20 @@ const RecentMatch = ({ match }: { match: any }) => (
     </div>
 );
 
+const PlayerCard = ({ player }: { player: Player }) => (
+    <div className="p-3 bg-muted/50 rounded-lg flex justify-between items-center">
+        <span className="font-medium">{player.name}</span>
+        <span className="text-xs text-muted-foreground">{player.role}</span>
+    </div>
+);
 
 export default function MatchPage({ params }: { params: { id: string } }) {
     const matchId = parseInt(params.id, 10);
     const currentMatch = allMatches.find(m => m.id === matchId);
+    const matchDetails = getMatchDetailsById(matchId);
 
-    if (!currentMatch) {
+
+    if (!currentMatch || !matchDetails) {
       return (
         <div className="flex flex-col min-h-screen">
           <Header />
@@ -62,8 +72,7 @@ export default function MatchPage({ params }: { params: { id: string } }) {
       );
     }
     
-    // Using matchDetails for static content and currentMatch for dynamic content
-    const { details, poll, recentMatches } = matchDetails;
+    const { details, poll, recentMatches, playingXI, headToHead } = matchDetails;
     const teams = { a: currentMatch.teams[0], b: currentMatch.teams[1] };
 
 
@@ -93,10 +102,10 @@ export default function MatchPage({ params }: { params: { id: string } }) {
                 </SectionWrapper>
 
                 <SectionWrapper>
-                    <Tabs defaultValue="overview" className="w-full max-w-4xl mx-auto">
-                        <TabsList className="grid w-full grid-cols-2 md:w-[300px] mb-6">
+                    <Tabs defaultValue="overview" className="w-full max-w-5xl mx-auto">
+                        <TabsList className="grid w-full grid-cols-2 md:w-[450px] mb-6">
                             <TabsTrigger value="overview">Overview</TabsTrigger>
-                            <TabsTrigger value="match-details">Match Details</TabsTrigger>
+                            <TabsTrigger value="details">Detailed View</TabsTrigger>
                         </TabsList>
                         <TabsContent value="overview">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -139,21 +148,66 @@ export default function MatchPage({ params }: { params: { id: string } }) {
                                 </Card>
                             </div>
                         </TabsContent>
-                        <TabsContent value="match-details">
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Match Details</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <MatchInfo label="Match" value={`${teams.a.name} vs ${teams.b.name}`} />
-                                    <MatchInfo label="Series" value={currentMatch.tournament} />
-                                    <MatchInfo label="Toss" value={details.toss} />
-                                    <MatchInfo label="Season" value={details.season} />
-                                    <MatchInfo label="Format" value={details.format} />
-                                    <MatchInfo label="Venue" value={details.venue} />
-                                    <MatchInfo label="Match Date" value={currentMatch.date} />
-                                </CardContent>
-                            </Card>
+                        <TabsContent value="details">
+                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                                <div className="lg:col-span-2 space-y-8">
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle className="flex items-center gap-2"><Users /> Playing XI</CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                {playingXI.map(team => (
+                                                    <div key={team.team}>
+                                                        <h3 className="font-bold text-lg mb-3">{team.team}</h3>
+                                                        <div className="space-y-2">
+                                                            {team.players.map(player => <PlayerCard key={player.name} player={player} />)}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle className="flex items-center gap-2"><Swords /> Head-to-Head</CardTitle>
+                                            <CardDescription>{headToHead.summary}</CardDescription>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <h4 className="font-semibold mb-3">Last 5 Matches</h4>
+                                            <div className="space-y-3">
+                                                {headToHead.last5.map((match, i) => (
+                                                    <div key={i} className="text-sm p-3 bg-muted/50 rounded-lg">
+                                                        <div className="flex justify-between">
+                                                            <span>{match.teams[0].name} <span className="font-bold">{match.teams[0].score}</span></span>
+                                                            <span>vs</span>
+                                                            <span><span className="font-bold">{match.teams[1].score}</span> {match.teams[1].name}</span>
+                                                        </div>
+                                                        <p className="text-xs text-primary mt-1 text-center">{match.result}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </div>
+                                <div className="lg:col-span-1">
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle className="flex items-center gap-2"><History /> Match Details</CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <MatchInfo label="Match" value={`${teams.a.name} vs ${teams.b.name}`} />
+                                            <MatchInfo label="Series" value={currentMatch.tournament} />
+                                            <MatchInfo label="Toss" value={details.toss} />
+                                            <MatchInfo label="Season" value={details.season} />
+                                            <MatchInfo label="Format" value={details.format} />
+                                            <MatchInfo label="Venue" value={details.venue} />
+                                            <MatchInfo label="Match Date" value={currentMatch.date} />
+                                        </CardContent>
+                                    </Card>
+                                </div>
+                            </div>
                         </TabsContent>
                     </Tabs>
                 </SectionWrapper>
