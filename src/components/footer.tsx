@@ -14,8 +14,19 @@ const socialLinks = [
   { icon: Youtube, href: '#', name: 'Youtube' },
 ];
 
-const quickLinks = ['Tournaments', 'Players', 'News', 'Match Centre'];
-const legalLinks = ['About Us', 'Contact Us', 'Privacy Policy', 'Terms of Service'];
+const quickLinks = [
+    { name: 'Tournaments', href: '/tournaments' },
+    { name: 'Players', href: '/players' },
+    { name: 'News', href: '/news' },
+    { name: 'Match Centre', href: '/match-centre' },
+];
+const legalLinks = [
+    { name: 'About Us', href: '/about-us' },
+    { name: 'Contact Us', href: '/contact-us' },
+    { name: 'Privacy Policy', href: '/privacy-policy' },
+    { name: 'Terms of Service', href: '/terms-of-service' },
+];
+
 
 export function Footer() {
   const [isClient, setIsClient] = useState(false);
@@ -47,9 +58,9 @@ export function Footer() {
             <h3 className="font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               {quickLinks.map((link) => (
-                <li key={link}>
-                  <Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    {link}
+                <li key={link.name}>
+                  <Link href={link.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                    {link.name}
                   </Link>
                 </li>
               ))}
@@ -60,9 +71,9 @@ export function Footer() {
             <h3 className="font-semibold mb-4">Legal</h3>
             <ul className="space-y-2">
               {legalLinks.map((link) => (
-                <li key={link}>
-                  <Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    {link}
+                <li key={link.name}>
+                  <Link href={link.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                    {link.name}
                   </Link>
                 </li>
               ))}
