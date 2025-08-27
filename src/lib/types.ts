@@ -14,6 +14,7 @@ export interface Match {
 
 export interface Article {
   id: number;
+  slug: string;
   category: string;
   title: string;
   author?: string;
@@ -21,6 +22,7 @@ export interface Article {
   imageUrl: string;
   imageHint: string;
   excerpt: string;
+  content: string;
 }
 
 export interface RankingTeam {

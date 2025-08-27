@@ -21,13 +21,15 @@ export function ArticleCard({ article, className, layout = 'vertical', isFeature
         layout === 'vertical' ? 'w-full aspect-video' : 'w-1/3 md:w-1/4',
         isFeatured && 'aspect-[4/3]'
       )}>
-        <Image
-          src={article.imageUrl}
-          alt={article.title}
-          fill
-          data-ai-hint={article.imageHint}
-          className="object-cover group-hover:scale-105 transition-transform duration-300 ease-in-out"
-        />
+        <Link href={`/news/${article.slug}`}>
+          <Image
+            src={article.imageUrl}
+            alt={article.title}
+            fill
+            data-ai-hint={article.imageHint}
+            className="object-cover group-hover:scale-105 transition-transform duration-300 ease-in-out"
+          />
+        </Link>
       </div>
       <div className={cn(
         "flex flex-col",
@@ -39,7 +41,7 @@ export function ArticleCard({ article, className, layout = 'vertical', isFeature
           isFeatured ? "text-xl md:text-2xl" : "text-lg",
           layout === 'horizontal' && 'text-base',
         )}>
-          <Link href="#" className="hover:text-primary transition-colors">
+          <Link href={`/news/${article.slug}`} className="hover:text-primary transition-colors">
             {article.title}
           </Link>
         </h3>
