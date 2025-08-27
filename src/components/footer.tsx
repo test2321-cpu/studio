@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -17,10 +18,10 @@ const quickLinks = ['Tournaments', 'Players', 'News', 'Match Centre'];
 const legalLinks = ['About Us', 'Contact Us', 'Privacy Policy', 'Terms of Service'];
 
 export function Footer() {
-  const [currentYear, setCurrentYear] = useState<number | null>(null);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setCurrentYear(new Date().getFullYear());
+    setIsClient(true);
   }, []);
 
   return (
@@ -77,7 +78,7 @@ export function Footer() {
 
         <div className="mt-8 pt-8 border-t">
           <p className="text-sm text-muted-foreground text-center">
-            &copy; {currentYear || new Date().getFullYear()} CricketPulse. All Rights Reserved.
+            &copy; {isClient ? new Date().getFullYear() : ''} CricketPulse. All Rights Reserved.
           </p>
         </div>
       </SectionWrapper>
