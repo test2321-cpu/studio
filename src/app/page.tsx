@@ -7,12 +7,15 @@ import { ArticleCard } from '@/components/article-card';
 import { RankingsSection } from '@/components/rankings-table';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
-const SectionHeader = ({ title }: { title: string }) => (
+const SectionHeader = ({ title, href }: { title: string, href: string }) => (
   <div className="flex items-center justify-between mb-6">
     <h2 className="text-2xl md:text-3xl font-bold tracking-tight">{title}</h2>
-    <Button variant="ghost" className="text-primary hover:text-primary">
-      View All <ArrowRight className="ml-2 h-4 w-4" />
+    <Button asChild variant="ghost" className="text-primary hover:text-primary">
+      <Link href={href}>
+        View All <ArrowRight className="ml-2 h-4 w-4" />
+      </Link>
     </Button>
   </div>
 );
@@ -31,7 +34,7 @@ export default function Home() {
 
         {/* Latest Section */}
         <SectionWrapper>
-          <SectionHeader title="Latest News" />
+          <SectionHeader title="Latest News" href="/news" />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
               <ArticleCard article={latestNews[0]} isFeatured={true} />
@@ -46,7 +49,7 @@ export default function Home() {
 
         {/* Featured Section */}
         <SectionWrapper>
-          <SectionHeader title="Featured" />
+          <SectionHeader title="Featured" href="/news" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {featuredArticles.map(article => (
               <ArticleCard key={article.id} article={article} />
@@ -56,7 +59,7 @@ export default function Home() {
 
         {/* Opinion Section */}
         <SectionWrapper>
-          <SectionHeader title="Opinion" />
+          <SectionHeader title="Opinion" href="/news"/>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {opinionArticles.map(article => (
               <ArticleCard key={article.id} article={article} />
@@ -66,7 +69,7 @@ export default function Home() {
 
         {/* Stories Section */}
         <SectionWrapper>
-          <SectionHeader title="Stories" />
+          <SectionHeader title="Stories" href="/news" />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {stories.map(article => (
               <ArticleCard key={article.id} article={article} />
