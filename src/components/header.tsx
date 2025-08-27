@@ -6,30 +6,36 @@ import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Logo } from './logo';
 import { cn } from '@/lib/utils';
+import { usePathname } from 'next/navigation';
 
 const navLinks = [
-  { name: 'Home', href: '#' },
-  { name: 'Tournaments', href: '#' },
-  { name: 'Match Centre', href: '#' },
-  { name: 'News', href: '#' },
-  { name: 'Players', href: '#' },
-  { name: 'Rankings', href: '#' },
+  { name: 'Home', href: '/' },
+  { name: 'Tournaments', href: '/tournaments' },
+  { name: 'Match Centre', href: '/match-centre' },
+  { name: 'News', href: '/news' },
+  { name: 'Players', href: '/players' },
+  { name: 'Rankings', href: '/rankings' },
 ];
 
-const NavLink = ({ href, children, className }: { href: string; children: React.ReactNode; className?: string; }) => (
-    <Link href={href} className={cn("text-sm font-medium text-muted-foreground transition-colors hover:text-primary", className)}>
+const NavLink = ({ href, children, isActive }: { href: string; children: React.ReactNode; isActive: boolean; }) => (
+    <Link href={href} className={cn(
+        "text-sm font-medium transition-colors hover:text-primary",
+        isActive ? "text-primary" : "text-muted-foreground"
+    )}>
         {children}
     </Link>
 );
 
 export function Header() {
+  const pathname = usePathname();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur-sm">
       <div className="container mx-auto flex h-16 max-w-7xl items-center px-4">
         <Logo />
         <nav className="hidden md:flex items-center space-x-6 ml-10">
             {navLinks.map((link) => (
-                <NavLink key={link.name} href={link.href}>
+                <NavLink key={link.name} href={link.href} isActive={pathname === link.href}>
                     {link.name}
                 </NavLink>
             ))}
@@ -55,7 +61,7 @@ export function Header() {
                 <Logo />
                 <nav className="mt-8 flex flex-col space-y-4">
                     {navLinks.map((link) => (
-                        <NavLink key={link.name} href={link.href} className="text-lg">
+                        <NavLink key={link.name} href={link.href} isActive={pathname === link.href}>
                             {link.name}
                         </NavLink>
                     ))}
