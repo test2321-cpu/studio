@@ -19,6 +19,7 @@ import {
 } from '@/data/dummy-data';
 import type { RankingTeam } from '@/lib/types';
 import { Card } from './ui/card';
+import Image from 'next/image';
 
 interface RankingsTableProps {
   title: string;
@@ -40,7 +41,10 @@ function RankingsTable({ title, data }: RankingsTableProps) {
           {data.map((team) => (
             <TableRow key={team.rank}>
               <TableCell className="font-medium">{team.rank}</TableCell>
-              <TableCell className="font-medium">{team.flag} {team.team}</TableCell>
+              <TableCell className="font-medium flex items-center gap-3">
+                <Image src={`https://cdn.countryflags.com/thumbs/${team.flag}/flag-400.png`} alt={team.team} width={24} height={18} className="object-contain" />
+                {team.team}
+              </TableCell>
               <TableCell className="text-right">{team.rating}</TableCell>
             </TableRow>
           ))}

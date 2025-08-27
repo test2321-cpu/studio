@@ -32,8 +32,8 @@ export const matches: Match[] = [
     status: 'Live', // This will be dynamically overridden
     tournament: 'T20 World Cup',
     teams: [
-      { name: 'IND', score: '150/2 (15.3 ov)', flag: '🇮🇳' },
-      { name: 'AUS', score: '188/5 (20 ov)', flag: '🇦🇺' },
+      { name: 'IND', score: '150/2 (15.3 ov)', flag: 'india' },
+      { name: 'AUS', score: '188/5 (20 ov)', flag: 'australia' },
     ],
     date: 'Today',
     startTime: liveMatchTimes.startTime,
@@ -45,8 +45,8 @@ export const matches: Match[] = [
     status: 'Recent',
     tournament: 'Bilateral Series',
     teams: [
-      { name: 'ENG', score: '205/10', flag: '🇬🇧' },
-      { name: 'SA', score: '208/4', flag: '🇿🇦' },
+      { name: 'ENG', score: '205/10', flag: 'england' },
+      { name: 'SA', score: '208/4', flag: 'south-africa' },
     ],
     date: 'Yesterday',
     startTime: getPastDateISO(1, 4),
@@ -58,8 +58,8 @@ export const matches: Match[] = [
     status: 'Upcoming',
     tournament: 'T20 World Cup',
     teams: [
-      { name: 'PAK', flag: '🇵🇰' },
-      { name: 'NZ', flag: '🇳🇿' },
+      { name: 'PAK', flag: 'pakistan' },
+      { name: 'NZ', flag: 'new-zealand' },
     ],
     date: 'Tomorrow, 7:30 PM',
     startTime: getFutureDateISO(1, 19, 30),
@@ -70,8 +70,8 @@ export const matches: Match[] = [
     status: 'Upcoming',
     tournament: 'Champions Trophy',
     teams: [
-      { name: 'BAN', flag: '🇧🇩' },
-      { name: 'SL', flag: '🇱🇰' },
+      { name: 'BAN', flag: 'bangladesh' },
+      { name: 'SL', flag: 'sri-lanka' },
     ],
     date: '2 days from now, 3:00 PM',
     startTime: getFutureDateISO(2, 15, 0),
@@ -82,8 +82,8 @@ export const matches: Match[] = [
     status: 'Recent',
     tournament: 'Bilateral Series',
     teams: [
-        { name: 'WI', score: '178/8', flag: '🏝️' },
-        { name: 'AFG', score: '179/5', flag: '🇦🇫' },
+        { name: 'WI', score: '178/8', flag: 'west-indies' },
+        { name: 'AFG', score: '179/5', flag: 'afghanistan' },
     ],
     date: '2 days ago',
     startTime: getPastDateISO(2, 4),
@@ -264,27 +264,27 @@ export const articles: Article[] = [
 ];
 
 export const rankings_odi: RankingTeam[] = [
-  { rank: 1, team: 'Australia', rating: 121, flag: '🇦🇺' },
-  { rank: 2, team: 'India', rating: 119, flag: '🇮🇳' },
-  { rank: 3, team: 'Pakistan', rating: 115, flag: '🇵🇰' },
-  { rank: 4, team: 'South Africa', rating: 106, flag: '🇿🇦' },
-  { rank: 5, team: 'New Zealand', rating: 103, flag: '🇳🇿' },
+  { rank: 1, team: 'Australia', rating: 121, flag: 'australia' },
+  { rank: 2, team: 'India', rating: 119, flag: 'india' },
+  { rank: 3, team: 'Pakistan', rating: 115, flag: 'pakistan' },
+  { rank: 4, team: 'South Africa', rating: 106, flag: 'south-africa' },
+  { rank: 5, team: 'New Zealand', rating: 103, flag: 'new-zealand' },
 ];
 
 export const rankings_t20i: RankingTeam[] = [
-  { rank: 1, team: 'India', rating: 265, flag: '🇮🇳' },
-  { rank: 2, team: 'England', rating: 261, flag: '🇬🇧' },
-  { rank: 3, team: 'Australia', rating: 257, flag: '🇦🇺' },
-  { rank: 4, team: 'New Zealand', rating: 254, flag: '🇳🇿' },
-  { rank: 5, team: 'South Africa', rating: 253, flag: '🇿🇦' },
+  { rank: 1, team: 'India', rating: 265, flag: 'india' },
+  { rank: 2, team: 'England', rating: 261, flag: 'england' },
+  { rank: 3, team: 'Australia', rating: 257, flag: 'australia' },
+  { rank: 4, team: 'New Zealand', rating: 254, flag: 'new-zealand' },
+  { rank: 5, team: 'South Africa', rating: 253, flag: 'south-africa' },
 ];
 
 export const rankings_test: RankingTeam[] = [
-  { rank: 1, team: 'Australia', rating: 124, flag: '🇦🇺' },
-  { rank: 2, team: 'India', rating: 120, flag: '🇮🇳' },
-  { rank: 3, team: 'England', rating: 116, flag: '🇬🇧' },
-  { rank: 4, team: 'South Africa', rating: 104, flag: '🇿🇦' },
-  { rank: 5, team: 'New Zealand', rating: 100, flag: '🇳🇿' },
+  { rank: 1, team: 'Australia', rating: 124, flag: 'australia' },
+  { rank: 2, team: 'India', rating: 120, flag: 'india' },
+  { rank: 3, team: 'England', rating: 116, flag: 'england' },
+  { rank: 4, team: 'South Africa', rating: 104, flag: 'south-africa' },
+  { rank: 5, team: 'New Zealand', rating: 100, flag: 'new-zealand' },
 ];
 
 const matchDetailsData: { [key: number]: MatchDetailsData } = {
@@ -301,13 +301,13 @@ const matchDetailsData: { [key: number]: MatchDetailsData } = {
       matchDate: 'June 29, 2024',
       status: 'Live',
     },
-    teams: { a: { name: 'India', flag: '🇮🇳' }, b: { name: 'Australia', flag: '🇦🇺' } },
+    teams: { a: { name: 'India', flag: 'india' }, b: { name: 'Australia', flag: 'australia' } },
     countdown: 'Match is live',
     poll: { a: { votes: 840, percentage: 65 }, b: { votes: 455, percentage: 35 } },
     recentMatches: [
-       { id: 1, type: "T20I", date: "24 Jun 2024", status: "Completed", teams: [{ name: "Australia", flag: "🇦🇺", score: "205/5" }, { name: "India", flag: "🇮🇳", score: "181/7" }], result: "Australia won by 24 runs" },
-       { id: 2, type: "T20I", date: "22 Jun 2024", status: "Completed", teams: [{ name: "Afghanistan", flag: "🇦🇫", score: "148/6" }, { name: "Australia", flag: "🇦🇺", score: "127" }], result: "Afghanistan won by 21 runs" },
-       { id: 3, type: "T20I", date: "20 Jun 2024", status: "Completed", teams: [{ name: "Australia", flag: "🇦🇺", score: "140/8" }, { name: "Bangladesh", flag: "🇧🇩", score: "100/8" }], result: "Australia won by 28 runs (DLS method)" },
+       { id: 1, type: "T20I", date: "24 Jun 2024", status: "Completed", teams: [{ name: "Australia", flag: "australia", score: "205/5" }, { name: "India", flag: "india", score: "181/7" }], result: "Australia won by 24 runs" },
+       { id: 2, type: "T20I", date: "22 Jun 2024", status: "Completed", teams: [{ name: "Afghanistan", flag: "afghanistan", score: "148/6" }, { name: "Australia", flag: "australia", score: "127" }], result: "Afghanistan won by 21 runs" },
+       { id: 3, type: "T20I", date: "20 Jun 2024", status: "Completed", teams: [{ name: "Australia", flag: "australia", score: "140/8" }, { name: "Bangladesh", flag: "bangladesh", score: "100/8" }], result: "Australia won by 28 runs (DLS method)" },
     ],
     playingXI: [
       { team: 'India', players: [
@@ -337,13 +337,13 @@ const matchDetailsData: { [key: number]: MatchDetailsData } = {
       matchDate: 'June 28, 2024',
       status: 'Recent',
     },
-    teams: { a: { name: 'England', flag: '🇬🇧' }, b: { name: 'South Africa', flag: '🇿🇦' } },
+    teams: { a: { name: 'England', flag: 'england' }, b: { name: 'South Africa', flag: 'south-africa' } },
     countdown: 'Match completed',
     poll: { a: { votes: 320, percentage: 40 }, b: { votes: 480, percentage: 60 } },
     recentMatches: [
-       { id: 1, type: "ODI", date: "26 Jun 2024", status: "Completed", teams: [{ name: "England", flag: "🇬🇧", score: "302/8" }, { name: "South Africa", flag: "🇿🇦", score: "298/9" }], result: "England won by 4 runs" },
-       { id: 2, type: "ODI", date: "24 Jun 2024", status: "Completed", teams: [{ name: "England", flag: "🇬🇧", score: "250" }, { name: "South Africa", flag: "🇿🇦", score: "251/3" }], result: "South Africa won by 7 wickets" },
-       { id: 3, type: "Test", date: "15 Jun 2024", status: "Completed", teams: [{ name: "England", flag: "🇬🇧", score: "450 & 230" }, { name: "South Africa", flag: "🇿🇦", score: "350 & 150" }], result: "England won by 180 runs" },
+       { id: 1, type: "ODI", date: "26 Jun 2024", status: "Completed", teams: [{ name: "England", flag: "england", score: "302/8" }, { name: "South Africa", flag: "south-africa", score: "298/9" }], result: "England won by 4 runs" },
+       { id: 2, type: "ODI", date: "24 Jun 2024", status: "Completed", teams: [{ name: "England", flag: "england", score: "250" }, { name: "South Africa", flag: "south-africa", score: "251/3" }], result: "South Africa won by 7 wickets" },
+       { id: 3, type: "Test", date: "15 Jun 2024", status: "Completed", teams: [{ name: "England", flag: "england", score: "450 & 230" }, { name: "South Africa", flag: "south-africa", score: "350 & 150" }], result: "England won by 180 runs" },
     ],
     playingXI: [
       { team: 'England', players: [
@@ -377,13 +377,13 @@ const matchDetailsData: { [key: number]: MatchDetailsData } = {
       matchDate: 'June 30, 2024',
       status: 'Upcoming',
     },
-    teams: { a: { name: 'Pakistan', flag: '🇵🇰' }, b: { name: 'New Zealand', flag: '🇳🇿' } },
+    teams: { a: { name: 'Pakistan', flag: 'pakistan' }, b: { name: 'New Zealand', flag: 'new-zealand' } },
     countdown: 'Match starts tomorrow',
     poll: { a: { votes: 620, percentage: 55 }, b: { votes: 505, percentage: 45 } },
     recentMatches: [
-       { id: 1, type: "T20I", date: "25 Jun 2024", status: "Completed", teams: [{ name: "Pakistan", flag: "🇵🇰", score: "159/8" }, { name: "Ireland", flag: "🇮🇪", score: "160/7" }], result: "Ireland won by 3 wickets" },
-       { id: 2, type: "T20I", date: "23 Jun 2024", status: "Completed", teams: [{ name: "Pakistan", flag: "🇵🇰", score: "182/6" }, { name: "Canada", flag: "🇨🇦", score: "178/7" }], result: "Pakistan won by 4 runs" },
-       { id: 3, type: "T20I", date: "21 Jun 2024", status: "Completed", teams: [{ name: "Pakistan", flag: "🇵🇰", score: "137/7" }, { name: "USA", flag: "🇺🇸", score: "138/5" }], result: "USA won by 5 wickets" },
+       { id: 1, type: "T20I", date: "25 Jun 2024", status: "Completed", teams: [{ name: "Pakistan", flag: "pakistan", score: "159/8" }, { name: "Ireland", flag: "ireland', score: '160/7' }], result: "Ireland won by 3 wickets" },
+       { id: 2, type: "T20I", date: "23 Jun 2024", status: "Completed", teams: [{ name: "Pakistan", flag: "pakistan", score: "182/6" }, { name: "Canada", flag: "canada", score: "178/7" }], result: "Pakistan won by 4 runs" },
+       { id: 3, type: "T20I", date: "21 Jun 2024", status: "Completed", teams: [{ name: "Pakistan", flag: "pakistan", score: "137/7" }, { name: "USA", flag: "united-states-of-america", score: "138/5" }], result: "USA won by 5 wickets" },
     ],
     playingXI: [
       { team: 'Pakistan', players: [
@@ -417,13 +417,13 @@ const matchDetailsData: { [key: number]: MatchDetailsData } = {
       matchDate: 'June 28, 2025',
       status: 'Upcoming',
     },
-    teams: { a: { name: 'Bangladesh', flag: '🇧🇩' }, b: { name: 'Sri Lanka', flag: '🇱🇰' } },
+    teams: { a: { name: 'Bangladesh', flag: 'bangladesh' }, b: { name: 'Sri Lanka', flag: 'sri-lanka' } },
     countdown: 'Match starts in 2 days',
     poll: { a: { votes: 410, percentage: 48 }, b: { votes: 440, percentage: 52 } },
     recentMatches: [
-       { id: 1, type: "ODI", date: "20 Jun 2024", status: "Completed", teams: [{ name: "Bangladesh", flag: "🇧🇩", score: "276/9" }, { name: "Netherlands", flag: "🇳🇱", score: "251" }], result: "Bangladesh won by 25 runs" },
-       { id: 2, type: "ODI", date: "18 Jun 2024", status: "Completed", teams: [{ name: "Bangladesh", flag: "🇧🇩", score: "265/8" }, { name: "South Africa", flag: "🇿🇦", score: "266/6" }], result: "South Africa won by 4 runs" },
-       { id: 3, type: "ODI", date: "16 Jun 2024", status: "Completed", teams: [{ name: "Bangladesh", flag: "🇧🇩", score: "306/7" }, { name: "Sri Lanka", flag: "🇱🇰", score: "307/8" }], result: "Sri Lanka won by 2 wickets" },
+       { id: 1, type: "ODI", date: "20 Jun 2024", status: "Completed", teams: [{ name: "Bangladesh", flag: "bangladesh", score: "276/9" }, { name: "Netherlands", flag: 'netherlands', score: "251" }], result: "Bangladesh won by 25 runs" },
+       { id: 2, type: "ODI", date: "18 Jun 2024", status: "Completed", teams: [{ name: "Bangladesh", flag: "bangladesh", score: "265/8" }, { name: "South Africa", flag: "south-africa", score: "266/6" }], result: "South Africa won by 4 runs" },
+       { id: 3, type: "ODI", date: "16 Jun 2024", status: "Completed", teams: [{ name: "Bangladesh", flag: "bangladesh", score: "306/7" }, { name: "Sri Lanka", flag: "sri-lanka", score: "307/8" }], result: "Sri Lanka won by 2 wickets" },
     ],
     playingXI: [
       { team: 'Bangladesh', players: [
@@ -457,13 +457,13 @@ const matchDetailsData: { [key: number]: MatchDetailsData } = {
       matchDate: 'June 27, 2024',
       status: 'Recent',
     },
-    teams: { a: { name: 'West Indies', flag: '🏝️' }, b: { name: 'Afghanistan', flag: '🇦🇫' } },
+    teams: { a: { name: 'West Indies', flag: 'west-indies' }, b: { name: 'Afghanistan', flag: 'afghanistan' } },
     countdown: 'Match completed',
     poll: { a: { votes: 380, percentage: 45 }, b: { votes: 460, percentage: 55 } },
     recentMatches: [
-       { id: 1, type: "T20I", date: "25 Jun 2024", status: "Completed", teams: [{ name: "West Indies", flag: "🏝️", score: "150/7" }, { name: "New Zealand", flag: "🇳🇿", score: "151/5" }], result: "New Zealand won by 5 wickets" },
-       { id: 2, type: "T20I", date: "23 Jun 2024", status: "Completed", teams: [{ name: "West Indies", flag: "🏝️", score: "202/5" }, { name: "Uganda", flag: "🇺🇬", score: "63" }], result: "West Indies won by 139 runs" },
-       { id: 3, type: "T20I", date: "21 Jun 2024", status: "Completed", teams: [{ name: "West Indies", flag: "🏝️", score: "189/5" }, { name: "PNG", flag: "🇵🇬", score: "190/7" }], result: "PNG won by 3 wickets" },
+       { id: 1, type: "T20I", date: "25 Jun 2024", status: "Completed", teams: [{ name: "West Indies", flag: "west-indies", score: "150/7" }, { name: "New Zealand", flag: "new-zealand", score: "151/5" }], result: "New Zealand won by 5 wickets" },
+       { id: 2, type: "T20I", date: "23 Jun 2024", status: "Completed", teams: [{ name: "West Indies", flag: "west-indies", score: "202/5" }, { name: "Uganda", flag: "uganda", score: "63" }], result: "West Indies won by 139 runs" },
+       { id: 3, type: "T20I", date: "21 Jun 2024", status: "Completed", teams: [{ name: "West Indies", flag: "west-indies", score: "189/5" }, { name: "Papua New Guinea", flag: 'papua-new-guinea', score: "190/7" }], result: "PNG won by 3 wickets" },
     ],
     playingXI: [
       { team: 'West Indies', players: [

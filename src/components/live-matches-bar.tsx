@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { CountdownTimer } from './countdown-timer';
 import { getDynamicMatchStatus } from '@/lib/utils';
 import type { Match } from '@/lib/types';
+import Image from 'next/image';
 
 export function LiveMatchesBar() {
   const getStatusBadge = (status: Match['status']) => {
@@ -40,12 +41,12 @@ export function LiveMatchesBar() {
                     </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex items-center font-medium gap-3">
-                        <span className="text-lg">{match.teams[0].flag}</span>
+                        <Image src={`https://cdn.countryflags.com/thumbs/${match.teams[0].flag}/flag-400.png`} alt={match.teams[0].name} width={24} height={18} className="object-contain" />
                         <span>{match.teams[0].name}</span>
                         {match.teams[0].score && <span className="ml-auto font-bold">{match.teams[0].score}</span>}
                       </div>
                       <div className="flex items-center font-medium gap-3">
-                        <span className="text-lg">{match.teams[1].flag}</span>
+                         <Image src={`https://cdn.countryflags.com/thumbs/${match.teams[1].flag}/flag-400.png`} alt={match.teams[1].name} width={24} height={18} className="object-contain" />
                         <span>{match.teams[1].name}</span>
                         {match.teams[1].score && <span className="ml-auto font-bold">{match.teams[1].score}</span>}
                       </div>

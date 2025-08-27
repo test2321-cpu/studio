@@ -14,10 +14,11 @@ import type { Player } from '@/lib/types';
 import { CountdownTimer } from '@/components/countdown-timer';
 import { getDynamicMatchStatus } from '@/lib/utils';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 const TeamDisplay = ({ name, flag }: { name: string, flag: string }) => (
     <div className="flex items-center text-3xl md:text-5xl font-bold gap-4">
-        <span className="text-4xl md:text-6xl">{flag}</span>
+        <Image src={`https://cdn.countryflags.com/thumbs/${flag}/flag-400.png`} alt={name} width={60} height={40} className="object-contain" />
         <h2>{name}</h2>
     </div>
 );
@@ -35,11 +36,11 @@ const RecentMatch = ({ match }: { match: any }) => (
             <div className="text-xs text-muted-foreground">{match.type} &bull; {match.date}</div>
             <div className="flex flex-col gap-1 mt-2">
                 <div className="flex items-center gap-2 font-medium">
-                    {match.teams[0].flag} {match.teams[0].name}
+                    <Image src={`https://cdn.countryflags.com/thumbs/${match.teams[0].flag}/flag-400.png`} alt={match.teams[0].name} width={20} height={15} className="object-contain" /> {match.teams[0].name}
                     <span className="ml-auto font-bold">{match.teams[0].score}</span>
                 </div>
                  <div className="flex items-center gap-2 font-medium">
-                    {match.teams[1].flag} {match.teams[1].name}
+                    <Image src={`https://cdn.countryflags.com/thumbs/${match.teams[1].flag}/flag-400.png`} alt={match.teams[1].name} width={20} height={15} className="object-contain" /> {match.teams[1].name}
                     <span className="ml-auto font-bold">{match.teams[1].score}</span>
                 </div>
             </div>
