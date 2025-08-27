@@ -10,6 +10,7 @@ import { Check, Users, History, Swords } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import type { Player } from '@/lib/types';
+import { CountdownTimer } from '@/components/countdown-timer';
 
 const TeamDisplay = ({ name, flag }: { name: string, flag: string }) => (
     <div className="flex items-center text-3xl md:text-5xl font-bold gap-4">
@@ -94,10 +95,19 @@ export default function MatchPage({ params }: { params: { id: string } }) {
                     </div>
 
                     <div className="text-center">
-                        <div className="bg-amber-100 text-amber-800 inline-block px-4 py-1 rounded-full text-sm font-semibold mb-3">
-                            {currentMatch.status}
-                        </div>
-                        {currentMatch.result && <p className="text-lg text-muted-foreground">{currentMatch.result}</p>}
+                        {currentMatch.status === 'Upcoming' ? (
+                            <div className="flex flex-col items-center gap-2 mb-3">
+                                <span className="text-sm font-semibold text-muted-foreground">Match Starts In</span>
+                                <CountdownTimer targetDate={currentMatch.dateTime} />
+                            </div>
+                        ) : (
+                            <>
+                                <div className="bg-amber-100 text-amber-800 inline-block px-4 py-1 rounded-full text-sm font-semibold mb-3">
+                                    {currentMatch.status}
+                                </div>
+                                {currentMatch.result && <p className="text-lg text-muted-foreground">{currentMatch.result}</p>}
+                            </>
+                        )}
                     </div>
                 </SectionWrapper>
 

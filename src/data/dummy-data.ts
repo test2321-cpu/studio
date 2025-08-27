@@ -1,6 +1,13 @@
 
 import type { Article, Match, RankingTeam, MatchDetailsData } from '@/lib/types';
 
+const getFutureDate = (days: number, hours: number, minutes: number): string => {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  date.setHours(hours, minutes, 0, 0);
+  return date.toISOString();
+}
+
 export const matches: Match[] = [
   {
     id: 1,
@@ -11,6 +18,7 @@ export const matches: Match[] = [
       { name: 'AUS', score: '188/5 (20 ov)', flag: '🇦🇺' },
     ],
     date: 'Today',
+    dateTime: new Date().toISOString(),
     result: 'India need 39 runs in 27 balls.',
   },
   {
@@ -22,6 +30,7 @@ export const matches: Match[] = [
       { name: 'SA', score: '208/4', flag: '🇿🇦' },
     ],
     date: 'Yesterday',
+    dateTime: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
     result: 'South Africa won by 6 wickets.',
   },
   {
@@ -33,6 +42,7 @@ export const matches: Match[] = [
       { name: 'NZ', flag: '🇳🇿' },
     ],
     date: 'Tomorrow, 7:30 PM',
+    dateTime: getFutureDate(1, 19, 30),
   },
   {
     id: 4,
@@ -43,6 +53,7 @@ export const matches: Match[] = [
       { name: 'SL', flag: '🇱🇰' },
     ],
     date: '28 June, 3:00 PM',
+    dateTime: getFutureDate(2, 15, 0),
   },
   {
     id: 5,
@@ -53,6 +64,7 @@ export const matches: Match[] = [
         { name: 'AFG', score: '179/5', flag: '🇦🇫' },
     ],
     date: '2 days ago',
+    dateTime: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
     result: 'Afghanistan won by 5 wickets.',
   },
 ];

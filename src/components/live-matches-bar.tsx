@@ -3,6 +3,7 @@ import { matches } from '@/data/dummy-data';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
+import { CountdownTimer } from './countdown-timer';
 
 export function LiveMatchesBar() {
   const getStatusBadge = (status: string) => {
@@ -45,9 +46,15 @@ export function LiveMatchesBar() {
                       {match.teams[1].score && <span className="ml-auto font-bold">{match.teams[1].score}</span>}
                     </div>
                   </div>
-                  <p className="text-xs text-primary mt-3">
-                    {match.result || `Match starts in ${28 + index*2} days`}
-                  </p>
+                  {match.status === 'Upcoming' ? (
+                    <div className="mt-3">
+                      <CountdownTimer targetDate={match.dateTime} />
+                    </div>
+                  ) : (
+                    <p className="text-xs text-primary mt-3">
+                      {match.result}
+                    </p>
+                  )}
                 </Card>
               </Link>
               {index < matches.length - 1 && <Separator orientation="vertical" className="h-20" />}
