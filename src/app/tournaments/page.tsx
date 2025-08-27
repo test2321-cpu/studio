@@ -1,4 +1,5 @@
 
+
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { SectionWrapper } from '@/components/section-wrapper';
@@ -17,7 +18,7 @@ export default function TournamentsPage() {
                     <h1 className="text-3xl font-bold mb-8 text-center">Tournaments</h1>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {tournaments.map(tournament => (
-                            <Link href="#" key={tournament}>
+                            <Link href={`/tournaments/${encodeURIComponent(tournament)}`} key={tournament}>
                                 <Card className="hover:shadow-lg transition-shadow">
                                     <CardHeader>
                                         <CardTitle>{tournament}</CardTitle>
