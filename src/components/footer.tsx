@@ -1,7 +1,10 @@
+'use client';
+
 import Link from 'next/link';
 import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
 import { Logo } from './logo';
 import { SectionWrapper } from './section-wrapper';
+import { useEffect, useState } from 'react';
 
 const socialLinks = [
   { icon: Facebook, href: '#', name: 'Facebook' },
@@ -14,6 +17,12 @@ const quickLinks = ['Tournaments', 'Players', 'News', 'Match Centre'];
 const legalLinks = ['About Us', 'Contact Us', 'Privacy Policy', 'Terms of Service'];
 
 export function Footer() {
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
+
   return (
     <footer className="bg-card border-t">
       <SectionWrapper>
@@ -68,7 +77,7 @@ export function Footer() {
 
         <div className="mt-8 pt-8 border-t">
           <p className="text-sm text-muted-foreground text-center">
-            &copy; {new Date().getFullYear()} CricketPulse. All Rights Reserved.
+            &copy; {currentYear || new Date().getFullYear()} CricketPulse. All Rights Reserved.
           </p>
         </div>
       </SectionWrapper>
