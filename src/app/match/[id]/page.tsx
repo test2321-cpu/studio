@@ -62,9 +62,8 @@ const PlayerCard = ({ player }: { player: Player }) => (
 export default function MatchPage({ params }: { params: { id: string } }) {
     const matchId = parseInt(params.id, 10);
     const currentMatch = allMatches.find(m => m.id === matchId);
-    const [isClient, setIsClient] = useState(false);
     
-    // To rerender component when status changes
+    const [isClient, setIsClient] = useState(false);
     const [dynamicStatus, setDynamicStatus] = useState(currentMatch?.status);
 
     useEffect(() => {
@@ -77,6 +76,18 @@ export default function MatchPage({ params }: { params: { id: string } }) {
         }
     }, [currentMatch]);
 
+    if (!isClient) {
+      return (
+        <div className="flex flex-col min-h-screen">
+          <Header />
+            <main className="flex-grow flex items-center justify-center">
+                {/* Optional: Add skeleton loaders here */}
+            </main>
+          <Footer />
+        </div>
+      );
+    }
+    
     const matchDetails = getMatchDetailsById(matchId);
 
     if (!currentMatch || !matchDetails) {
@@ -113,7 +124,7 @@ export default function MatchPage({ params }: { params: { id: string } }) {
                     </div>
 
                     <div className="text-center">
-                        {isClient && dynamicStatus === 'Upcoming' ? (
+                        {dynamicStatus === 'Upcoming' ? (
                             <div className="flex flex-col items-center gap-2 mb-3">
                                 <span className="text-sm font-semibold text-muted-foreground">Match Starts In</span>
                                 <CountdownTimer targetDate={currentMatch.startTime} />
@@ -121,7 +132,7 @@ export default function MatchPage({ params }: { params: { id: string } }) {
                         ) : (
                             <>
                                 <div className="bg-amber-100 text-amber-800 inline-block px-4 py-1 rounded-full text-sm font-semibold mb-3">
-                                    {isClient && dynamicStatus === 'Live' ? 'Live' : 'Match Ended'}
+                                    {dynamicStatus === 'Live' ? 'Live' : 'Match Ended'}
                                 </div>
                                 {currentMatch.result && <p className="text-lg text-muted-foreground">{currentMatch.result}</p>}
                             </>
@@ -244,3 +255,5 @@ export default function MatchPage({ params }: { params: { id: string } }) {
         </div>
     );
 }
+
+    
