@@ -75,5 +75,27 @@
     h1, h2, h3, h4 {
       @apply font-bold text-foreground;
     }
+
+    table {
+        @apply w-full my-6 text-left border-collapse;
+    }
+    th {
+        @apply p-4 font-semibold text-sm bg-muted;
+    }
+    td {
+        @apply p-4 border-b;
+    }
+    tr:nth-child(even) {
+        @apply bg-muted/50;
+    }
+    iframe {
+      @apply w-full aspect-video;
+    }
+    .responsive-video-wrap {
+      @apply relative overflow-hidden pt-[56.25%];
+    }
+    .responsive-video-wrap iframe {
+      @apply absolute top-0 left-0 w-full h-full;
+    }
   }
 }
