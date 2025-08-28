@@ -31,8 +31,6 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 208 70% 43%;
-
-    --radius: 0.3rem;
   }
 
   .dark {
@@ -72,5 +70,10 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  .prose {
+    h1, h2, h3, h4 {
+      @apply font-bold text-foreground;
+    }
   }
 }
