@@ -1,13 +1,15 @@
+
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { LiveMatchesBar } from '@/components/live-matches-bar';
 import { SectionWrapper } from '@/components/section-wrapper';
-import { articles } from '@/data/dummy-data';
 import { ArticleCard } from '@/components/article-card';
 import { RankingsSection } from '@/components/rankings-table';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { getArticles } from '@/services/firestore';
+import type { Article } from '@/lib/types';
 
 const SectionHeader = ({ title, href }: { title: string, href: string }) => (
   <div className="flex items-center justify-between mb-6">
@@ -20,7 +22,15 @@ const SectionHeader = ({ title, href }: { title: string, href: string }) => (
   </div>
 );
 
-export default function Home() {
+export default async function Home() {
+  let articles: Article[] = [];
+  try {
+    articles = await getArticles();
+  } catch (error) {
+    console.error("Failed to fetch articles:", error);
+    // You can render an error message here if you want
+  }
+
   const latestNews = articles.filter(a => a.category === 'Latest News');
   const featuredArticles = articles.filter(a => a.category === 'Featured').slice(0, 2);
   const opinionArticles = articles.filter(a => a.category === 'Opinion').slice(0, 3);
@@ -37,7 +47,7 @@ export default function Home() {
           <SectionHeader title="Latest News" href="/news" />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
-              <ArticleCard article={latestNews[0]} isFeatured={true} />
+              {latestNews.length > 0 && <ArticleCard article={latestNews[0]} isFeatured={true} />}
             </div>
             <div className="flex flex-col gap-4">
               {latestNews.slice(1, 5).map(article => (

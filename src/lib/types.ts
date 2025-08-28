@@ -14,7 +14,7 @@ export interface Match {
 }
 
 export interface Article {
-  id: number;
+  id: string; // Changed to string to accommodate firestore doc id
   slug: string;
   category: string;
   title: string;
