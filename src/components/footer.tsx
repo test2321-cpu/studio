@@ -29,10 +29,10 @@ const legalLinks = [
 
 
 export function Footer() {
-  const [isClient, setIsClient] = useState(false);
+  const [year, setYear] = useState<number | null>(null);
 
   useEffect(() => {
-    setIsClient(true);
+    setYear(new Date().getFullYear());
   }, []);
 
   return (
@@ -89,7 +89,7 @@ export function Footer() {
 
         <div className="mt-8 pt-8 border-t">
           <p className="text-sm text-muted-foreground text-center">
-            &copy; {isClient ? new Date().getFullYear() : ''} CricketPulse. All Rights Reserved.
+            &copy; {year || new Date().getFullYear()} CricketPulse. All Rights Reserved.
           </p>
         </div>
       </SectionWrapper>
