@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Header } from '@/components/header';
@@ -7,8 +8,30 @@ import { MatchCard } from '@/components/match-card';
 import { matches } from '@/data/dummy-data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getDynamicMatchStatus } from '@/lib/utils';
+import { useEffect, useState } from 'react';
 
 export default function MatchCentrePage() {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+     return (
+        <div className="flex flex-col min-h-screen">
+            <Header />
+            <main className="flex-grow">
+                <SectionWrapper>
+                <h1 className="text-3xl font-bold mb-8 text-center">Match Centre</h1>
+                {/* Optional: Add skeleton loaders here */}
+                </SectionWrapper>
+            </main>
+            <Footer />
+        </div>
+     )
+  }
+
   const liveMatches = matches.filter(m => getDynamicMatchStatus(m) === 'Live');
   const upcomingMatches = matches.filter(m => getDynamicMatchStatus(m) === 'Upcoming');
   const recentMatches = matches.filter(m => getDynamicMatchStatus(m) === 'Recent');

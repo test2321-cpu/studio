@@ -62,11 +62,13 @@ const PlayerCard = ({ player }: { player: Player }) => (
 export default function MatchPage({ params }: { params: { id: string } }) {
     const matchId = parseInt(params.id, 10);
     const currentMatch = allMatches.find(m => m.id === matchId);
+    const [isClient, setIsClient] = useState(false);
     
     // To rerender component when status changes
-    const [dynamicStatus, setDynamicStatus] = useState(currentMatch ? getDynamicMatchStatus(currentMatch) : 'Recent');
+    const [dynamicStatus, setDynamicStatus] = useState(currentMatch?.status);
 
     useEffect(() => {
+        setIsClient(true);
         if (currentMatch) {
             const interval = setInterval(() => {
                 setDynamicStatus(getDynamicMatchStatus(currentMatch));
@@ -76,7 +78,6 @@ export default function MatchPage({ params }: { params: { id: string } }) {
     }, [currentMatch]);
 
     const matchDetails = getMatchDetailsById(matchId);
-
 
     if (!currentMatch || !matchDetails) {
       return (
@@ -112,7 +113,7 @@ export default function MatchPage({ params }: { params: { id: string } }) {
                     </div>
 
                     <div className="text-center">
-                        {dynamicStatus === 'Upcoming' ? (
+                        {isClient && dynamicStatus === 'Upcoming' ? (
                             <div className="flex flex-col items-center gap-2 mb-3">
                                 <span className="text-sm font-semibold text-muted-foreground">Match Starts In</span>
                                 <CountdownTimer targetDate={currentMatch.startTime} />
@@ -120,7 +121,7 @@ export default function MatchPage({ params }: { params: { id: string } }) {
                         ) : (
                             <>
                                 <div className="bg-amber-100 text-amber-800 inline-block px-4 py-1 rounded-full text-sm font-semibold mb-3">
-                                    {dynamicStatus === 'Live' ? 'Live' : 'Match Ended'}
+                                    {isClient && dynamicStatus === 'Live' ? 'Live' : 'Match Ended'}
                                 </div>
                                 {currentMatch.result && <p className="text-lg text-muted-foreground">{currentMatch.result}</p>}
                             </>

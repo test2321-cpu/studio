@@ -13,9 +13,12 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
 const MatchItem = ({ match, isLast }: { match: Match, isLast: boolean }) => {
-  const [dynamicStatus, setDynamicStatus] = useState(getDynamicMatchStatus(match));
+  const [dynamicStatus, setDynamicStatus] = useState(match.status);
+  const [isClient, setIsClient] = useState(false);
+
 
   useEffect(() => {
+    setIsClient(true);
     const interval = setInterval(() => {
         setDynamicStatus(getDynamicMatchStatus(match));
     }, 1000);
@@ -44,7 +47,7 @@ const MatchItem = ({ match, isLast }: { match: Match, isLast: boolean }) => {
               {match.tournament} &bull; {match.date.startsWith('Today') || match.date.startsWith('Tomorrow') ? '' : ' '}
               {match.date.replace(/, \d{1,2}:\d{2} [AP]M$/, '')}
             </p>
-            {getStatusBadge(dynamicStatus)}
+            {isClient ? getStatusBadge(dynamicStatus) : getStatusBadge(match.status)}
           </div>
           <div className="space-y-2 text-sm">
             <div className="flex items-center font-medium gap-3">
@@ -58,13 +61,13 @@ const MatchItem = ({ match, isLast }: { match: Match, isLast: boolean }) => {
               {match.teams[1].score && <span className="ml-auto font-bold">{match.teams[1].score}</span>}
             </div>
           </div>
-          {dynamicStatus === 'Upcoming' ? (
+          {isClient && dynamicStatus === 'Upcoming' ? (
             <div className="mt-3">
               <CountdownTimer targetDate={match.startTime} />
             </div>
           ) : (
             <p className="text-xs text-primary mt-3">
-              {dynamicStatus === 'Recent' ? match.result : 'Match is live. Stay tuned for updates.'}
+              {isClient && dynamicStatus === 'Recent' ? match.result : (isClient && dynamicStatus === 'Live' ? 'Match is live. Stay tuned for updates.' : match.result)}
             </p>
           )}
         </Card>
@@ -75,6 +78,25 @@ const MatchItem = ({ match, isLast }: { match: Match, isLast: boolean }) => {
 }
 
 export function LiveMatchesBar() {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    // Render a placeholder or nothing on the server
+    return (
+       <div className="bg-background border-b">
+        <div className="container mx-auto max-w-7xl px-4">
+          <div className="flex items-center space-x-4 overflow-x-auto py-3 no-scrollbar">
+            {/* You can add a skeleton loader here if you want */}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="bg-background border-b">
       <div className="container mx-auto max-w-7xl px-4">

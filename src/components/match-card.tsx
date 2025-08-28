@@ -12,9 +12,11 @@ import { useState, useEffect } from 'react';
 
 
 export function MatchCard({ match }: { match: Match }) {
-  const [dynamicStatus, setDynamicStatus] = useState(getDynamicMatchStatus(match));
+  const [dynamicStatus, setDynamicStatus] = useState(match.status);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     const interval = setInterval(() => {
         setDynamicStatus(getDynamicMatchStatus(match));
     }, 1000);
@@ -43,7 +45,7 @@ export function MatchCard({ match }: { match: Match }) {
                     <p className="text-xs text-muted-foreground font-semibold">
                       {match.tournament}
                     </p>
-                    {getStatusBadge(dynamicStatus)}
+                    {isClient ? getStatusBadge(dynamicStatus) : getStatusBadge(match.status)}
                 </div>
                  <p className="text-xs text-muted-foreground pt-1">
                     {match.date.replace(/, \d{1,2}:\d{2} [AP]M$/, '')}
@@ -62,13 +64,13 @@ export function MatchCard({ match }: { match: Match }) {
                 </div>
             </CardContent>
             <CardFooter>
-                 {dynamicStatus === 'Upcoming' ? (
+                 {isClient && dynamicStatus === 'Upcoming' ? (
                     <div className="w-full">
                       <CountdownTimer targetDate={match.startTime} />
                     </div>
                   ) : (
                     <p className="text-xs text-primary">
-                      {dynamicStatus === 'Recent' ? match.result : 'Match is live. Stay tuned!'}
+                      {isClient && dynamicStatus === 'Recent' ? match.result : (isClient && dynamicStatus === 'Live' ? 'Match is live. Stay tuned!' : match.result)}
                     </p>
                   )}
             </CardFooter>
