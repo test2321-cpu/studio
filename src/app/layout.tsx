@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
+import NoSSR from '@/components/no-ssr';
 
 export const metadata: Metadata = {
   title: 'CricketPulse - Your Daily Dose of Cricket',
@@ -21,7 +22,9 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased bg-background text-foreground" suppressHydrationWarning={true}>
         {children}
-        <Toaster />
+        <NoSSR>
+          <Toaster />
+        </NoSSR>
       </body>
     </html>
   );
