@@ -45,9 +45,10 @@ export default async function ArticlePage({ params }: { params: { slug: string }
                     className="object-cover"
                 />
             </div>
-            <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
-              <p>{article.content}</p>
-            </div>
+            <div 
+              className="prose prose-lg dark:prose-invert max-w-none text-muted-foreground space-y-4"
+              dangerouslySetInnerHTML={{ __html: article.content }}
+            />
           </article>
         </SectionWrapper>
       </main>

@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from '@/hooks/use-toast';
 import type { Article } from '@/lib/types';
@@ -198,7 +198,10 @@ export function ArticleForm({ article }: ArticleFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Content</FormLabel>
-                      <FormControl><Textarea placeholder="The full content of the article" rows={10} {...field} /></FormControl>
+                      <FormControl><Textarea placeholder="The full content of the article. You can use HTML for formatting." rows={15} {...field} /></FormControl>
+                      <FormDescription>
+                        You can use HTML tags like &lt;h1&gt;, &lt;p&gt;, &lt;ul&gt;, etc. for formatting.
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
