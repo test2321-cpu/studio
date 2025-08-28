@@ -27,6 +27,12 @@ const nextConfig: NextConfig = {
         hostname: 'cdn.countryflags.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ytimg.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
