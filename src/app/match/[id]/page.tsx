@@ -9,7 +9,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Check, Users, History, Swords } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
 import type { Player } from '@/lib/types';
 import { CountdownTimer } from '@/components/countdown-timer';
 import { getDynamicMatchStatus } from '@/lib/utils';
@@ -68,20 +67,25 @@ export default function MatchPage({ params }: { params: { id: string } }) {
 
     useEffect(() => {
         setIsClient(true);
-        if (currentMatch) {
+    }, []);
+
+    useEffect(() => {
+        if (currentMatch && isClient) {
             const interval = setInterval(() => {
                 setDynamicStatus(getDynamicMatchStatus(currentMatch));
             }, 1000);
             return () => clearInterval(interval);
         }
-    }, [currentMatch]);
+    }, [currentMatch, isClient]);
 
     if (!isClient) {
       return (
         <div className="flex flex-col min-h-screen">
           <Header />
             <main className="flex-grow flex items-center justify-center">
-                {/* Optional: Add skeleton loaders here */}
+                <div className="text-center p-8">
+                    <p className="text-muted-foreground">Loading match details...</p>
+                </div>
             </main>
           <Footer />
         </div>
@@ -255,5 +259,3 @@ export default function MatchPage({ params }: { params: { id: string } }) {
         </div>
     );
 }
-
-    

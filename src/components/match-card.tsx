@@ -12,19 +12,23 @@ import { useState, useEffect } from 'react';
 
 
 export function MatchCard({ match }: { match: Match }) {
-  const [dynamicStatus, setDynamicStatus] = useState(match.status);
+  const [dynamicStatus, setDynamicStatus] = useState<Match['status'] | null>(null);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-    const interval = setInterval(() => {
+    // Set initial status on client mount
+    const updateStatus = () => {
         setDynamicStatus(getDynamicMatchStatus(match));
-    }, 1000);
+    }
+    updateStatus(); // Set immediately
+    const interval = setInterval(updateStatus, 1000); // Then update every second
     return () => clearInterval(interval);
   }, [match]);
 
 
-  const getStatusBadge = (status: Match['status']) => {
+  const getStatusBadge = (status: Match['status'] | null) => {
+    if (!status) return null;
     switch (status) {
       case 'Live':
         return <Badge variant="destructive">Live</Badge>;
@@ -45,7 +49,7 @@ export function MatchCard({ match }: { match: Match }) {
                     <p className="text-xs text-muted-foreground font-semibold">
                       {match.tournament}
                     </p>
-                    {isClient ? getStatusBadge(dynamicStatus) : getStatusBadge(match.status)}
+                    {isClient ? getStatusBadge(dynamicStatus) : null}
                 </div>
                  <p className="text-xs text-muted-foreground pt-1">
                     {match.date.replace(/, \d{1,2}:\d{2} [AP]M$/, '')}
@@ -70,7 +74,7 @@ export function MatchCard({ match }: { match: Match }) {
                     </div>
                   ) : (
                     <p className="text-xs text-primary">
-                      {isClient && dynamicStatus === 'Recent' ? match.result : (isClient && dynamicStatus === 'Live' ? 'Match is live. Stay tuned!' : match.result)}
+                      {isClient && dynamicStatus === 'Recent' ? match.result : (isClient && dynamicStatus === 'Live' ? 'Match is live. Stay tuned!' : (isClient ? match.result : ''))}
                     </p>
                   )}
             </CardFooter>

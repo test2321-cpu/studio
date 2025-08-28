@@ -9,13 +9,29 @@ import { matches } from '@/data/dummy-data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getDynamicMatchStatus } from '@/lib/utils';
 import { useEffect, useState } from 'react';
+import type { Match } from '@/lib/types';
+
 
 export default function MatchCentrePage() {
   const [isClient, setIsClient] = useState(false);
+  const [liveMatches, setLiveMatches] = useState<Match[]>([]);
+  const [upcomingMatches, setUpcomingMatches] = useState<Match[]>([]);
+  const [recentMatches, setRecentMatches] = useState<Match[]>([]);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  useEffect(() => {
+    if (isClient) {
+      const interval = setInterval(() => {
+        setLiveMatches(matches.filter(m => getDynamicMatchStatus(m) === 'Live'));
+        setUpcomingMatches(matches.filter(m => getDynamicMatchStatus(m) === 'Upcoming'));
+        setRecentMatches(matches.filter(m => getDynamicMatchStatus(m) === 'Recent'));
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [isClient]);
 
   if (!isClient) {
      return (
@@ -31,10 +47,6 @@ export default function MatchCentrePage() {
         </div>
      )
   }
-
-  const liveMatches = matches.filter(m => getDynamicMatchStatus(m) === 'Live');
-  const upcomingMatches = matches.filter(m => getDynamicMatchStatus(m) === 'Upcoming');
-  const recentMatches = matches.filter(m => getDynamicMatchStatus(m) === 'Recent');
 
   return (
     <div className="flex flex-col min-h-screen">
