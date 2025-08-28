@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -29,19 +30,22 @@ interface CountdownTimerProps {
 }
 
 export function CountdownTimer({ targetDate, className }: CountdownTimerProps) {
-    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(targetDate));
+    const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
     const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
         setIsClient(true);
-        const timer = setTimeout(() => {
+        setTimeLeft(calculateTimeLeft(targetDate));
+
+        const timer = setInterval(() => {
             setTimeLeft(calculateTimeLeft(targetDate));
         }, 1000);
 
-        return () => clearTimeout(timer);
-    });
+        return () => clearInterval(timer);
+    }, [targetDate]);
 
     if (!isClient) {
+        // Render a placeholder on the server
         return null;
     }
     
