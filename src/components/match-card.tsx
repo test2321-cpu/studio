@@ -1,4 +1,6 @@
 
+'use client';
+
 import Link from 'next/link';
 import type { Match } from '@/lib/types';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
@@ -6,10 +8,19 @@ import { Badge } from '@/components/ui/badge';
 import { CountdownTimer } from './countdown-timer';
 import { getDynamicMatchStatus } from '@/lib/utils';
 import Image from 'next/image';
+import { useState, useEffect } from 'react';
 
 
 export function MatchCard({ match }: { match: Match }) {
-  const dynamicStatus = getDynamicMatchStatus(match);
+  const [dynamicStatus, setDynamicStatus] = useState(getDynamicMatchStatus(match));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+        setDynamicStatus(getDynamicMatchStatus(match));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [match]);
+
 
   const getStatusBadge = (status: Match['status']) => {
     switch (status) {
