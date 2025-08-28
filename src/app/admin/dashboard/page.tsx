@@ -1,4 +1,3 @@
-
 'use client';
 
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
@@ -6,9 +5,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { app } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogOut } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { LogOut, Newspaper, Shield } from "lucide-react";
 import { Logo } from "@/components/logo";
+import Link from "next/link";
 
 export default function AdminDashboardPage() {
     const auth = getAuth(app);
@@ -56,14 +56,28 @@ export default function AdminDashboardPage() {
             <main className="flex-grow p-8">
                 <div className="container mx-auto max-w-7xl">
                     <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Welcome, Admin!</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p>This is where you will manage your articles and match data. This area is under construction.</p>
-                        </CardContent>
-                    </Card>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2"><Newspaper /> Manage Articles</CardTitle>
+                                <CardDescription>Create, edit, and delete news articles.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <Button asChild>
+                                    <Link href="/admin/articles">Go to Articles</Link>
+                                </Button>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2"><Shield /> Manage Matches</CardTitle>
+                                <CardDescription>Update match details, scores, and player info. (Coming soon)</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <Button disabled>Go to Matches</Button>
+                            </CardContent>
+                        </Card>
+                    </div>
                 </div>
             </main>
         </div>
