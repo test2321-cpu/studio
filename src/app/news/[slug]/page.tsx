@@ -2,13 +2,14 @@
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { SectionWrapper } from '@/components/section-wrapper';
-import { articles } from '@/data/dummy-data';
+import { getArticles } from '@/services/firestore';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Calendar, User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
-export default function ArticlePage({ params }: { params: { slug: string } }) {
+export default async function ArticlePage({ params }: { params: { slug: string } }) {
+  const articles = await getArticles();
   const article = articles.find(a => a.slug === params.slug);
 
   if (!article) {

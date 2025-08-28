@@ -2,10 +2,18 @@
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { SectionWrapper } from '@/components/section-wrapper';
-import { articles } from '@/data/dummy-data';
+import { getArticles } from '@/services/firestore';
 import { ArticleCard } from '@/components/article-card';
+import type { Article } from '@/lib/types';
 
-export default function NewsPage() {
+export default async function NewsPage() {
+    let articles: Article[] = [];
+    try {
+        articles = await getArticles();
+    } catch (error) {
+        console.error("Failed to fetch articles:", error);
+    }
+
     return (
         <div className="flex flex-col min-h-screen">
             <Header />
