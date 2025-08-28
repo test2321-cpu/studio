@@ -11,13 +11,25 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
 
-export function MatchCard({ match }: { match: Match }) {
+function MatchCardInternal({ match }: { match: Match }) {
   const [isClient, setIsClient] = useState(false);
+  
   useEffect(() => {
       setIsClient(true);
   }, []);
 
-  const dynamicStatus = getDynamicMatchStatus(match);
+  const [dynamicStatus, setDynamicStatus] = useState(match.status);
+
+  useEffect(() => {
+    const updateStatus = () => {
+      setDynamicStatus(getDynamicMatchStatus(match));
+    };
+    if (isClient) {
+      updateStatus();
+      const interval = setInterval(updateStatus, 60000); // Update every minute
+      return () => clearInterval(interval);
+    }
+  }, [isClient, match]);
 
   const getStatusBadge = (status: Match['status']) => {
     switch (status) {
@@ -92,4 +104,5 @@ export function MatchCard({ match }: { match: Match }) {
   );
 }
 
+export { MatchCardInternal as MatchCard };
     

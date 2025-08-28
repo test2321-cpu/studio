@@ -59,15 +59,30 @@ const PlayerCard = ({ player }: { player: Player }) => (
 );
 
 export default function MatchPage({ params }: { params: { id: string } }) {
-    const matchId = parseInt(params.id, 10);
-    const currentMatch = allMatches.find(m => m.id === matchId);
-    
     const [isClient, setIsClient] = useState(false);
+    
     useEffect(() => {
         setIsClient(true);
     }, []);
+    
+    const matchId = parseInt(params.id, 10);
+    const currentMatch = allMatches.find(m => m.id === matchId);
+    
+    const [dynamicStatus, setDynamicStatus] = useState(currentMatch?.status);
 
-    const dynamicStatus = currentMatch ? getDynamicMatchStatus(currentMatch) : null;
+    useEffect(() => {
+        if (currentMatch) {
+            const updateStatus = () => {
+                setDynamicStatus(getDynamicMatchStatus(currentMatch));
+            };
+            if (isClient) {
+                updateStatus();
+                const interval = setInterval(updateStatus, 60000);
+                return () => clearInterval(interval);
+            }
+        }
+    }, [isClient, currentMatch]);
+
 
     if (!currentMatch) {
       return (
@@ -262,5 +277,3 @@ export default function MatchPage({ params }: { params: { id: string } }) {
         </div>
     );
 }
-
-    

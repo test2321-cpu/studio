@@ -1,15 +1,31 @@
 
+
 'use client';
 
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { SectionWrapper } from '@/components/section-wrapper';
-import { MatchCard } from '@/components/match-card';
 import { matches } from '@/data/dummy-data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getDynamicMatchStatus } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import type { Match } from '@/lib/types';
+import dynamic from 'next/dynamic';
+
+const MatchCard = dynamic(() => import('@/components/match-card').then(mod => mod.MatchCard), { 
+  ssr: false,
+  loading: () => (
+    <div className="flex flex-col h-full animate-pulse bg-muted/50 rounded-lg p-4">
+      <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
+      <div className="h-3 bg-muted rounded w-1/2 mb-4"></div>
+      <div className="flex-grow space-y-2">
+        <div className="h-5 bg-muted rounded w-full"></div>
+        <div className="h-5 bg-muted rounded w-full"></div>
+      </div>
+      <div className="h-3 bg-muted rounded w-1/2 mt-4"></div>
+    </div>
+  )
+});
 
 
 export default function MatchCentrePage() {
@@ -18,11 +34,7 @@ export default function MatchCentrePage() {
   useEffect(() => {
     setIsClient(true);
   }, []);
-  
-  const liveMatches = matches.filter(m => getDynamicMatchStatus(m) === 'Live');
-  const upcomingMatches = matches.filter(m => getDynamicMatchStatus(m) === 'Upcoming');
-  const recentMatches = matches.filter(m => getDynamicMatchStatus(m) === 'Recent');
-  
+
   if (!isClient) {
      return (
         <div className="flex flex-col min-h-screen">
@@ -39,7 +51,11 @@ export default function MatchCentrePage() {
         </div>
      )
   }
-
+  
+  const liveMatches = matches.filter(m => getDynamicMatchStatus(m) === 'Live');
+  const upcomingMatches = matches.filter(m => getDynamicMatchStatus(m) === 'Upcoming');
+  const recentMatches = matches.filter(m => getDynamicMatchStatus(m) === 'Recent');
+  
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -88,5 +104,3 @@ export default function MatchCentrePage() {
     </div>
   );
 }
-
-    

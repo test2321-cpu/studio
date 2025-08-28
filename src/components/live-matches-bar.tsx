@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -13,7 +12,17 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
 const MatchItem = ({ match, isLast }: { match: Match, isLast: boolean }) => {
-  const dynamicStatus = getDynamicMatchStatus(match);
+  const [dynamicStatus, setDynamicStatus] = useState(match.status);
+
+  useEffect(() => {
+    const updateStatus = () => {
+      setDynamicStatus(getDynamicMatchStatus(match));
+    };
+    updateStatus();
+    const interval = setInterval(updateStatus, 60000); // Update every minute
+    return () => clearInterval(interval);
+  }, [match]);
+
 
   const getStatusBadge = (status: Match['status']) => {
     switch (status) {
@@ -67,36 +76,36 @@ const MatchItem = ({ match, isLast }: { match: Match, isLast: boolean }) => {
   )
 }
 
-export function LiveMatchesBar() {
-  const [isClient, setIsClient] = useState(false);
+function LiveMatchesBarInternal() {
+    const [isClient, setIsClient] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
-  if (!isClient) {
+    if (!isClient) {
+        return (
+            <div className="bg-background border-b">
+                <div className="container mx-auto max-w-7xl px-4">
+                <div className="h-[124px] flex items-center">
+                    <p className="text-muted-foreground">Loading matches...</p>
+                </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
-       <div className="bg-background border-b">
-        <div className="container mx-auto max-w-7xl px-4">
-          <div className="h-[124px] flex items-center">
-            <p className="text-muted-foreground">Loading matches...</p>
-          </div>
+        <div className="bg-background border-b">
+            <div className="container mx-auto max-w-7xl px-4">
+                <div className="flex items-center space-x-4 overflow-x-auto py-3 no-scrollbar">
+                {matches.map((match, index) => (
+                    <MatchItem key={match.id} match={match} isLast={index === matches.length - 1} />
+                ))}
+                </div>
+            </div>
         </div>
-      </div>
     );
-  }
-
-  return (
-    <div className="bg-background border-b">
-      <div className="container mx-auto max-w-7xl px-4">
-        <div className="flex items-center space-x-4 overflow-x-auto py-3 no-scrollbar">
-          {matches.map((match, index) => (
-            <MatchItem key={match.id} match={match} isLast={index === matches.length - 1} />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
 }
 
-    
+export { LiveMatchesBarInternal as LiveMatchesBar };

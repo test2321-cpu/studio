@@ -1,7 +1,8 @@
 
+'use client';
+
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
-import { LiveMatchesBar } from '@/components/live-matches-bar';
 import { SectionWrapper } from '@/components/section-wrapper';
 import { ArticleCard } from '@/components/article-card';
 import { RankingsSection } from '@/components/rankings-table';
@@ -10,6 +11,10 @@ import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { getArticles } from '@/services/firestore';
 import type { Article } from '@/lib/types';
+import dynamic from 'next/dynamic';
+import { useEffect, useState } from 'react';
+
+const LiveMatchesBar = dynamic(() => import('@/components/live-matches-bar').then(mod => mod.LiveMatchesBar), { ssr: false });
 
 const SectionHeader = ({ title, href }: { title: string, href: string }) => (
   <div className="flex items-center justify-between mb-6">
@@ -22,14 +27,22 @@ const SectionHeader = ({ title, href }: { title: string, href: string }) => (
   </div>
 );
 
-export default async function Home() {
-  let articles: Article[] = [];
-  try {
-    articles = await getArticles();
-  } catch (error) {
-    console.error("Failed to fetch articles:", error);
-    // You can render an error message here if you want
-  }
+export default function Home() {
+  const [articles, setArticles] = useState<Article[]>([]);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const fetchedArticles = await getArticles();
+        setArticles(fetchedArticles);
+      } catch (error) {
+        console.error("Failed to fetch articles:", error);
+        // You can render an error message here if you want
+      }
+    };
+    fetchArticles();
+  }, []);
+
 
   const latestNews = articles.filter(a => a.category === 'Latest News');
   const featuredArticles = articles.filter(a => a.category === 'Featured').slice(0, 2);
