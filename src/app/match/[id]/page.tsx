@@ -63,20 +63,23 @@ export default function MatchPage({ params }: { params: { id: string } }) {
     const currentMatch = allMatches.find(m => m.id === matchId);
     
     const [isClient, setIsClient] = useState(false);
-    const [dynamicStatus, setDynamicStatus] = useState(currentMatch?.status);
-
     useEffect(() => {
         setIsClient(true);
     }, []);
 
-    useEffect(() => {
-        if (currentMatch && isClient) {
-            const interval = setInterval(() => {
-                setDynamicStatus(getDynamicMatchStatus(currentMatch));
-            }, 1000);
-            return () => clearInterval(interval);
-        }
-    }, [currentMatch, isClient]);
+    const dynamicStatus = currentMatch ? getDynamicMatchStatus(currentMatch) : null;
+
+    if (!currentMatch) {
+      return (
+        <div className="flex flex-col min-h-screen">
+          <Header />
+          <main className="flex-grow flex items-center justify-center">
+            <h1 className="text-2xl font-bold">Match not found</h1>
+          </main>
+          <Footer />
+        </div>
+      );
+    }
 
     if (!isClient) {
       return (
@@ -94,12 +97,12 @@ export default function MatchPage({ params }: { params: { id: string } }) {
     
     const matchDetails = getMatchDetailsById(matchId);
 
-    if (!currentMatch || !matchDetails) {
+    if (!matchDetails) {
       return (
         <div className="flex flex-col min-h-screen">
           <Header />
           <main className="flex-grow flex items-center justify-center">
-            <h1 className="text-2xl font-bold">Match not found</h1>
+            <h1 className="text-2xl font-bold">Match details not found</h1>
           </main>
           <Footer />
         </div>
@@ -259,3 +262,5 @@ export default function MatchPage({ params }: { params: { id: string } }) {
         </div>
     );
 }
+
+    

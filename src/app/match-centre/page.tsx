@@ -14,25 +14,15 @@ import type { Match } from '@/lib/types';
 
 export default function MatchCentrePage() {
   const [isClient, setIsClient] = useState(false);
-  const [liveMatches, setLiveMatches] = useState<Match[]>([]);
-  const [upcomingMatches, setUpcomingMatches] = useState<Match[]>([]);
-  const [recentMatches, setRecentMatches] = useState<Match[]>([]);
-
+  
   useEffect(() => {
     setIsClient(true);
   }, []);
-
-  useEffect(() => {
-    if (isClient) {
-      const interval = setInterval(() => {
-        setLiveMatches(matches.filter(m => getDynamicMatchStatus(m) === 'Live'));
-        setUpcomingMatches(matches.filter(m => getDynamicMatchStatus(m) === 'Upcoming'));
-        setRecentMatches(matches.filter(m => getDynamicMatchStatus(m) === 'Recent'));
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [isClient]);
-
+  
+  const liveMatches = matches.filter(m => getDynamicMatchStatus(m) === 'Live');
+  const upcomingMatches = matches.filter(m => getDynamicMatchStatus(m) === 'Upcoming');
+  const recentMatches = matches.filter(m => getDynamicMatchStatus(m) === 'Recent');
+  
   if (!isClient) {
      return (
         <div className="flex flex-col min-h-screen">
@@ -40,7 +30,9 @@ export default function MatchCentrePage() {
             <main className="flex-grow">
                 <SectionWrapper>
                 <h1 className="text-3xl font-bold mb-8 text-center">Match Centre</h1>
-                {/* Optional: Add skeleton loaders here */}
+                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                  <p className='text-center col-span-3 text-muted-foreground'>Loading matches...</p>
+                 </div>
                 </SectionWrapper>
             </main>
             <Footer />
@@ -96,3 +88,5 @@ export default function MatchCentrePage() {
     </div>
   );
 }
+
+    

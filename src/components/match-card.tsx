@@ -12,23 +12,14 @@ import { useState, useEffect } from 'react';
 
 
 export function MatchCard({ match }: { match: Match }) {
-  const [dynamicStatus, setDynamicStatus] = useState<Match['status'] | null>(null);
   const [isClient, setIsClient] = useState(false);
-
   useEffect(() => {
-    setIsClient(true);
-    // Set initial status on client mount
-    const updateStatus = () => {
-        setDynamicStatus(getDynamicMatchStatus(match));
-    }
-    updateStatus(); // Set immediately
-    const interval = setInterval(updateStatus, 1000); // Then update every second
-    return () => clearInterval(interval);
-  }, [match]);
+      setIsClient(true);
+  }, []);
 
+  const dynamicStatus = getDynamicMatchStatus(match);
 
-  const getStatusBadge = (status: Match['status'] | null) => {
-    if (!status) return null;
+  const getStatusBadge = (status: Match['status']) => {
     switch (status) {
       case 'Live':
         return <Badge variant="destructive">Live</Badge>;
@@ -40,6 +31,24 @@ export function MatchCard({ match }: { match: Match }) {
         return <Badge>{status}</Badge>;
     }
   };
+  
+  if (!isClient) {
+    return (
+      <Card className="flex flex-col h-full animate-pulse">
+        <CardHeader>
+            <div className="h-4 bg-muted rounded w-3/4"></div>
+            <div className="h-3 bg-muted rounded w-1/2 mt-1"></div>
+        </CardHeader>
+        <CardContent className="flex-grow space-y-2">
+            <div className="h-5 bg-muted rounded w-full"></div>
+            <div className="h-5 bg-muted rounded w-full"></div>
+        </CardContent>
+        <CardFooter>
+            <div className="h-3 bg-muted rounded w-1/2"></div>
+        </CardFooter>
+      </Card>
+    )
+  }
 
   return (
     <Link href={`/match/${match.id}`} className="block hover:shadow-lg transition-shadow rounded-lg">
@@ -49,7 +58,7 @@ export function MatchCard({ match }: { match: Match }) {
                     <p className="text-xs text-muted-foreground font-semibold">
                       {match.tournament}
                     </p>
-                    {isClient ? getStatusBadge(dynamicStatus) : null}
+                    {getStatusBadge(dynamicStatus)}
                 </div>
                  <p className="text-xs text-muted-foreground pt-1">
                     {match.date.replace(/, \d{1,2}:\d{2} [AP]M$/, '')}
@@ -68,13 +77,13 @@ export function MatchCard({ match }: { match: Match }) {
                 </div>
             </CardContent>
             <CardFooter>
-                 {isClient && dynamicStatus === 'Upcoming' ? (
+                 {dynamicStatus === 'Upcoming' ? (
                     <div className="w-full">
                       <CountdownTimer targetDate={match.startTime} />
                     </div>
                   ) : (
                     <p className="text-xs text-primary">
-                      {isClient && dynamicStatus === 'Recent' ? match.result : (isClient && dynamicStatus === 'Live' ? 'Match is live. Stay tuned!' : (isClient ? match.result : ''))}
+                      {dynamicStatus === 'Recent' ? match.result : (dynamicStatus === 'Live' ? 'Match is live. Stay tuned!' : (match.result || ''))}
                     </p>
                   )}
             </CardFooter>
@@ -82,3 +91,5 @@ export function MatchCard({ match }: { match: Match }) {
     </Link>
   );
 }
+
+    

@@ -13,21 +13,9 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
 const MatchItem = ({ match, isLast }: { match: Match, isLast: boolean }) => {
-  const [dynamicStatus, setDynamicStatus] = useState<Match['status'] | null>(null);
-  const [isClient, setIsClient] = useState(false);
+  const dynamicStatus = getDynamicMatchStatus(match);
 
-  useEffect(() => {
-    setIsClient(true);
-    const updateStatus = () => {
-      setDynamicStatus(getDynamicMatchStatus(match));
-    };
-    updateStatus(); 
-    const interval = setInterval(updateStatus, 1000);
-    return () => clearInterval(interval);
-  }, [match]);
-
-  const getStatusBadge = (status: Match['status'] | null) => {
-    if (!status) return null;
+  const getStatusBadge = (status: Match['status']) => {
     switch (status) {
       case 'Live':
         return <Badge variant="destructive">Live</Badge>;
@@ -49,7 +37,7 @@ const MatchItem = ({ match, isLast }: { match: Match, isLast: boolean }) => {
               {match.tournament} &bull; {match.date.startsWith('Today') || match.date.startsWith('Tomorrow') ? '' : ' '}
               {match.date.replace(/, \d{1,2}:\d{2} [AP]M$/, '')}
             </p>
-            {isClient ? getStatusBadge(dynamicStatus) : null}
+            {getStatusBadge(dynamicStatus)}
           </div>
           <div className="space-y-2 text-sm">
             <div className="flex items-center font-medium gap-3">
@@ -63,13 +51,13 @@ const MatchItem = ({ match, isLast }: { match: Match, isLast: boolean }) => {
               {match.teams[1].score && <span className="ml-auto font-bold">{match.teams[1].score}</span>}
             </div>
           </div>
-          {isClient && dynamicStatus === 'Upcoming' ? (
+          {dynamicStatus === 'Upcoming' ? (
             <div className="mt-3">
               <CountdownTimer targetDate={match.startTime} />
             </div>
           ) : (
             <p className="text-xs text-primary mt-3">
-              {isClient && dynamicStatus === 'Recent' ? match.result : (isClient && dynamicStatus === 'Live' ? 'Match is live. Stay tuned for updates.' : (isClient ? match.result : ''))}
+              {dynamicStatus === 'Recent' ? match.result : (dynamicStatus === 'Live' ? 'Match is live. Stay tuned for updates.' : (match.result || ''))}
             </p>
           )}
         </Card>
@@ -86,22 +74,29 @@ export function LiveMatchesBar() {
     setIsClient(true);
   }, []);
 
+  if (!isClient) {
+    return (
+       <div className="bg-background border-b">
+        <div className="container mx-auto max-w-7xl px-4">
+          <div className="h-[124px] flex items-center">
+            <p className="text-muted-foreground">Loading matches...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-background border-b">
       <div className="container mx-auto max-w-7xl px-4">
         <div className="flex items-center space-x-4 overflow-x-auto py-3 no-scrollbar">
-          {isClient ? (
-            matches.map((match, index) => (
-              <MatchItem key={match.id} match={match} isLast={index === matches.length - 1} />
-            ))
-          ) : (
-            <div className="h-[124px] flex items-center">
-              {/* You can add a skeleton loader here if you want */}
-              <p className="text-muted-foreground">Loading matches...</p>
-            </div>
-          )}
+          {matches.map((match, index) => (
+            <MatchItem key={match.id} match={match} isLast={index === matches.length - 1} />
+          ))}
         </div>
       </div>
     </div>
   );
 }
+
+    
