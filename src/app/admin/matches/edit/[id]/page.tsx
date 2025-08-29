@@ -44,6 +44,9 @@ export default function EditMatchPage({ params }: { params: { id: string } }) {
             if (!data.playingXI || data.playingXI.length === 0) {
                 matchData.playingXI = [];
             }
+             if (!data.recentMatches || data.recentMatches.length === 0) {
+                matchData.recentMatches = [];
+            }
             await updateMatch(match.id, matchData);
             toast({ title: "Success", description: "Match updated successfully." });
             router.push('/admin/matches');

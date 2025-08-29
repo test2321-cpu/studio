@@ -79,7 +79,7 @@ const formSchema = z.object({
       ).length(2),
       result: z.string(),
     })
-  ),
+  ).optional(),
 })
 
 export type FormValues = z.infer<typeof formSchema>
@@ -92,6 +92,7 @@ interface MatchFormProps {
 
 export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: MatchFormProps) {
   const [hasPlayingXI, setHasPlayingXI] = useState(isEditing && !!defaultValues?.playingXI && defaultValues.playingXI.length > 0)
+  const [hasRecentMatches, setHasRecentMatches] = useState(isEditing && !!defaultValues?.recentMatches && defaultValues.recentMatches.length > 0);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -129,6 +130,9 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
             form.setError("playingXI", { type: "manual", message: "Each team must have 11 players if Playing XI is enabled."});
             return;
         }
+    }
+     if (!hasRecentMatches) {
+      data.recentMatches = [];
     }
     onSubmitForm(data)
   }
@@ -236,7 +240,27 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
           </Card>
           <Card><CardHeader><CardTitle>Head-to-Head</CardTitle></CardHeader><CardContent><HeadToHeadFields control={form.control} /></CardContent></Card>
           <Card><CardHeader><CardTitle>Poll</CardTitle></CardHeader><CardContent><PollFields control={form.control} /></CardContent></Card>
-          <Card><CardHeader><CardTitle>Recent Matches</CardTitle></CardHeader><CardContent><RecentMatchesFields control={form.control} /></CardContent></Card>
+          <Card>
+            <CardHeader>
+               <div className="flex items-center justify-between">
+                <CardTitle>Recent Matches</CardTitle>
+                 <div className="flex items-center space-x-2">
+                    <Switch
+                        id="has-recent-matches"
+                        checked={hasRecentMatches}
+                        onCheckedChange={setHasRecentMatches}
+                    />
+                    <Label htmlFor="has-recent-matches">Enable</Label>
+                </div>
+              </div>
+              <CardDescription>Toggle to add or skip recent match history.</CardDescription>
+            </CardHeader>
+            {hasRecentMatches && (
+                <CardContent>
+                    <RecentMatchesFields control={form.control} />
+                </CardContent>
+            )}
+          </Card>
 
           <Button type="submit" className="w-full">{isEditing ? "Update Match" : "Save Match"}</Button>
         </form>
