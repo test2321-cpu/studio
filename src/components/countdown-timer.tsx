@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 
 const calculateTimeLeft = (targetDate: string) => {
+    // Handle ISO string format 'YYYY-MM-DDTHH:MM'
     const difference = +new Date(targetDate) - +new Date();
     let timeLeft = {
         days: 0,
@@ -78,3 +79,5 @@ export function CountdownTimer({ targetDate, className }: CountdownTimerProps) {
         </div>
     );
 }
+
+    

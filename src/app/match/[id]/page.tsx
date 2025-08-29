@@ -1,19 +1,21 @@
 
+
 'use client';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { SectionWrapper } from '@/components/section-wrapper';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getMatchDetailsById, matches as allMatches } from '@/data/dummy-data';
+import { getMatchDetailsById } from '@/data/dummy-data';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Check, Users, History, Swords } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
-import type { Player } from '@/lib/types';
+import type { Player, Match } from '@/lib/types';
 import { CountdownTimer } from '@/components/countdown-timer';
 import { getDynamicMatchStatus } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { getMatchById } from '@/services/matches';
 
 const TeamDisplay = ({ name, flag }: { name: string, flag: string }) => (
     <div className="flex items-center text-3xl md:text-5xl font-bold gap-4">
@@ -22,10 +24,10 @@ const TeamDisplay = ({ name, flag }: { name: string, flag: string }) => (
     </div>
 );
 
-const MatchInfo = ({ label, value }: { label: string, value: string }) => (
+const MatchInfo = ({ label, value }: { label: string, value: string | undefined }) => (
     <div className="flex justify-between py-3 border-b">
         <span className="text-muted-foreground">{label}</span>
-        <span className="font-semibold text-right">{value}</span>
+        <span className="font-semibold text-right">{value || '-'}</span>
     </div>
 );
 
@@ -59,44 +61,38 @@ const PlayerCard = ({ player }: { player: Player }) => (
 );
 
 export default function MatchPage({ params }: { params: { id: string } }) {
-    const [isClient, setIsClient] = useState(false);
-    
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
-    
-    const matchId = parseInt(params.id, 10);
-    const currentMatch = allMatches.find(m => m.id === matchId);
-    
-    const [dynamicStatus, setDynamicStatus] = useState(currentMatch?.status);
+    const [currentMatch, setCurrentMatch] = useState<Match | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [dynamicStatus, setDynamicStatus] = useState<Match['status'] | undefined>();
 
+    useEffect(() => {
+      const fetchMatch = async () => {
+        try {
+          const match = await getMatchById(params.id);
+          setCurrentMatch(match);
+          if (match) {
+            setDynamicStatus(getDynamicMatchStatus(match));
+          }
+        } catch (error) {
+          console.error("Failed to fetch match:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchMatch();
+    }, [params.id]);
+    
     useEffect(() => {
         if (currentMatch) {
-            const updateStatus = () => {
+            const interval = setInterval(() => {
                 setDynamicStatus(getDynamicMatchStatus(currentMatch));
-            };
-            if (isClient) {
-                updateStatus();
-                const interval = setInterval(updateStatus, 60000);
-                return () => clearInterval(interval);
-            }
+            }, 60000);
+            return () => clearInterval(interval);
         }
-    }, [isClient, currentMatch]);
+    }, [currentMatch]);
 
 
-    if (!currentMatch) {
-      return (
-        <div className="flex flex-col min-h-screen">
-          <Header />
-          <main className="flex-grow flex items-center justify-center">
-            <h1 className="text-2xl font-bold">Match not found</h1>
-          </main>
-          <Footer />
-        </div>
-      );
-    }
-
-    if (!isClient) {
+    if (loading) {
       return (
         <div className="flex flex-col min-h-screen">
           <Header />
@@ -110,21 +106,21 @@ export default function MatchPage({ params }: { params: { id: string } }) {
       );
     }
     
-    const matchDetails = getMatchDetailsById(matchId);
-
-    if (!matchDetails) {
+    if (!currentMatch) {
       return (
         <div className="flex flex-col min-h-screen">
           <Header />
           <main className="flex-grow flex items-center justify-center">
-            <h1 className="text-2xl font-bold">Match details not found</h1>
+            <h1 className="text-2xl font-bold">Match not found</h1>
           </main>
           <Footer />
         </div>
       );
     }
     
-    const { details, poll, recentMatches, playingXI, headToHead } = matchDetails;
+    // Using mock data for details as it's not in our Firestore model
+    const matchDetails = getMatchDetailsById(params.id);
+    const { details, poll, recentMatches, playingXI, headToHead } = matchDetails || {};
     const teams = { a: currentMatch.teams[0], b: currentMatch.teams[1] };
 
 
@@ -136,7 +132,7 @@ export default function MatchPage({ params }: { params: { id: string } }) {
                     <div className="text-center">
                         <p className="text-sm text-muted-foreground">{currentMatch.date}</p>
                         <h1 className="text-xl md:text-2xl font-bold mt-1">{currentMatch.tournament}</h1>
-                        <p className="text-sm text-muted-foreground mt-1">{details.venue}</p>
+                        <p className="text-sm text-muted-foreground mt-1">{details?.venue}</p>
                     </div>
 
                     <div className="flex items-center justify-around my-8">
@@ -149,7 +145,7 @@ export default function MatchPage({ params }: { params: { id: string } }) {
                         {dynamicStatus === 'Upcoming' ? (
                             <div className="flex flex-col items-center gap-2 mb-3">
                                 <span className="text-sm font-semibold text-muted-foreground">Match Starts In</span>
-                                <CountdownTimer targetDate={currentMatch.startTime} />
+                                <CountdownTimer targetDate={`${currentMatch.date}T${currentMatch.time}`} />
                             </div>
                         ) : (
                             <>
@@ -169,7 +165,8 @@ export default function MatchPage({ params }: { params: { id: string } }) {
                             <TabsTrigger value="details">Detailed View</TabsTrigger>
                         </TabsList>
                         <TabsContent value="overview">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                {poll && (
                                 <Card>
                                     <CardHeader>
                                         <CardTitle>Who will win the game?</CardTitle>
@@ -197,6 +194,8 @@ export default function MatchPage({ params }: { params: { id: string } }) {
                                         </div>
                                     </CardContent>
                                 </Card>
+                                )}
+                                {recentMatches && recentMatches.length > 0 && (
                                 <Card>
                                      <CardHeader>
                                         <CardTitle>Recent 5 Matches</CardTitle>
@@ -207,11 +206,13 @@ export default function MatchPage({ params }: { params: { id: string } }) {
                                         ))}
                                     </CardContent>
                                 </Card>
+                                )}
                             </div>
                         </TabsContent>
                         <TabsContent value="details">
                              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                                 <div className="lg:col-span-2 space-y-8">
+                                    {playingXI && playingXI.length > 0 && (
                                     <Card>
                                         <CardHeader>
                                             <CardTitle className="flex items-center gap-2"><Users /> Playing XI</CardTitle>
@@ -229,7 +230,9 @@ export default function MatchPage({ params }: { params: { id: string } }) {
                                             </div>
                                         </CardContent>
                                     </Card>
+                                    )}
 
+                                    {headToHead && headToHead.last5.length > 0 && (
                                     <Card>
                                         <CardHeader>
                                             <CardTitle className="flex items-center gap-2"><Swords /> Head-to-Head</CardTitle>
@@ -251,6 +254,7 @@ export default function MatchPage({ params }: { params: { id: string } }) {
                                             </div>
                                         </CardContent>
                                     </Card>
+                                    )}
                                 </div>
                                 <div className="lg:col-span-1">
                                     <Card>
@@ -260,10 +264,10 @@ export default function MatchPage({ params }: { params: { id: string } }) {
                                         <CardContent>
                                             <MatchInfo label="Match" value={`${teams.a.name} vs ${teams.b.name}`} />
                                             <MatchInfo label="Series" value={currentMatch.tournament} />
-                                            <MatchInfo label="Toss" value={details.toss} />
-                                            <MatchInfo label="Season" value={details.season} />
-                                            <MatchInfo label="Format" value={details.format} />
-                                            <MatchInfo label="Venue" value={details.venue} />
+                                            <MatchInfo label="Toss" value={details?.toss} />
+                                            <MatchInfo label="Season" value={details?.season} />
+                                            <MatchInfo label="Format" value={details?.format} />
+                                            <MatchInfo label="Venue" value={details?.venue} />
                                             <MatchInfo label="Match Date" value={currentMatch.date} />
                                         </CardContent>
                                     </Card>
@@ -277,3 +281,5 @@ export default function MatchPage({ params }: { params: { id: string } }) {
         </div>
     );
 }
+
+    

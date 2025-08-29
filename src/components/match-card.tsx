@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Link from 'next/link';
@@ -19,6 +20,19 @@ function MatchCardInternal({ match }: { match: Match }) {
   }, []);
 
   const [dynamicStatus, setDynamicStatus] = useState(match.status);
+
+  const getMatchDate = (dateStr: string) => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const matchDate = new Date(dateStr.replace(/-/g, '/'));
+
+    if (matchDate.toDateString() === today.toDateString()) return 'Today';
+    if (matchDate.toDateString() === tomorrow.toDateString()) return 'Tomorrow';
+    
+    return dateStr;
+  }
 
   useEffect(() => {
     const updateStatus = () => {
@@ -73,7 +87,7 @@ function MatchCardInternal({ match }: { match: Match }) {
                     {getStatusBadge(dynamicStatus)}
                 </div>
                  <p className="text-xs text-muted-foreground pt-1">
-                    {match.date.replace(/, \d{1,2}:\d{2} [AP]M$/, '')}
+                    {getMatchDate(match.date)}
                 </p>
             </CardHeader>
             <CardContent className="flex-grow space-y-2 text-sm">
@@ -91,7 +105,7 @@ function MatchCardInternal({ match }: { match: Match }) {
             <CardFooter>
                  {dynamicStatus === 'Upcoming' ? (
                     <div className="w-full">
-                      <CountdownTimer targetDate={match.startTime} />
+                      <CountdownTimer targetDate={`${match.date}T${match.time}`} />
                     </div>
                   ) : (
                     <p className="text-xs text-primary">
@@ -105,4 +119,5 @@ function MatchCardInternal({ match }: { match: Match }) {
 }
 
 export { MatchCardInternal as MatchCard };
+
     

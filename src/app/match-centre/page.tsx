@@ -5,12 +5,12 @@
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { SectionWrapper } from '@/components/section-wrapper';
-import { matches } from '@/data/dummy-data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getDynamicMatchStatus } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import type { Match } from '@/lib/types';
 import dynamic from 'next/dynamic';
+import { getMatches } from '@/services/matches';
 
 const MatchCard = dynamic(() => import('@/components/match-card').then(mod => mod.MatchCard), { 
   ssr: false,
@@ -29,13 +29,24 @@ const MatchCard = dynamic(() => import('@/components/match-card').then(mod => mo
 
 
 export default function MatchCentrePage() {
-  const [isClient, setIsClient] = useState(false);
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    setIsClient(true);
+    const fetchMatches = async () => {
+        try {
+            const fetchedMatches = await getMatches();
+            setMatches(fetchedMatches);
+        } catch (error) {
+            console.error("Failed to fetch matches:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    fetchMatches();
   }, []);
 
-  if (!isClient) {
+  if (loading) {
      return (
         <div className="flex flex-col min-h-screen">
             <Header />
@@ -71,9 +82,9 @@ export default function MatchCentrePage() {
             </TabsList>
             <TabsContent value="all">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-                {matches.map(match => (
+                {matches.length > 0 ? matches.map(match => (
                   <MatchCard key={match.id} match={match} />
-                ))}
+                )) : <p className='text-center col-span-3 text-muted-foreground'>No matches found.</p>}
               </div>
             </TabsContent>
              <TabsContent value="live">
@@ -104,3 +115,5 @@ export default function MatchCentrePage() {
     </div>
   );
 }
+
+    

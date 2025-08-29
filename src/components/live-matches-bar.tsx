@@ -1,7 +1,7 @@
+
 'use client';
 
 import Link from 'next/link';
-import { matches } from '@/data/dummy-data';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
@@ -10,9 +10,23 @@ import { getDynamicMatchStatus } from '@/lib/utils';
 import type { Match } from '@/lib/types';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import { getMatches } from '@/services/matches';
 
 const MatchItem = ({ match, isLast }: { match: Match, isLast: boolean }) => {
   const [dynamicStatus, setDynamicStatus] = useState(match.status);
+  
+  const getMatchDate = (dateStr: string) => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const matchDate = new Date(dateStr.replace(/-/g, '/'));
+
+    if (matchDate.toDateString() === today.toDateString()) return 'Today';
+    if (matchDate.toDateString() === tomorrow.toDateString()) return 'Tomorrow';
+    
+    return dateStr;
+  }
 
   useEffect(() => {
     const updateStatus = () => {
@@ -43,8 +57,7 @@ const MatchItem = ({ match, isLast }: { match: Match, isLast: boolean }) => {
         <Card className="p-4 shadow-sm border min-w-[300px] md:min-w-[320px]">
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs text-muted-foreground font-semibold">
-              {match.tournament} &bull; {match.date.startsWith('Today') || match.date.startsWith('Tomorrow') ? '' : ' '}
-              {match.date.replace(/, \d{1,2}:\d{2} [AP]M$/, '')}
+              {match.tournament} &bull; {getMatchDate(match.date)}
             </p>
             {getStatusBadge(dynamicStatus)}
           </div>
@@ -62,7 +75,7 @@ const MatchItem = ({ match, isLast }: { match: Match, isLast: boolean }) => {
           </div>
           {dynamicStatus === 'Upcoming' ? (
             <div className="mt-3">
-              <CountdownTimer targetDate={match.startTime} />
+              <CountdownTimer targetDate={`${match.date}T${match.time}`} />
             </div>
           ) : (
             <p className="text-xs text-primary mt-3">
@@ -77,13 +90,24 @@ const MatchItem = ({ match, isLast }: { match: Match, isLast: boolean }) => {
 }
 
 function LiveMatchesBarInternal() {
-    const [isClient, setIsClient] = useState(false);
+    const [matches, setMatches] = useState<Match[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        setIsClient(true);
+        const fetchMatches = async () => {
+            try {
+                const fetchedMatches = await getMatches();
+                setMatches(fetchedMatches);
+            } catch (error) {
+                console.error("Failed to fetch matches:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchMatches();
     }, []);
 
-    if (!isClient) {
+    if (loading) {
         return (
             <div className="bg-background border-b">
                 <div className="container mx-auto max-w-7xl px-4">
@@ -93,6 +117,18 @@ function LiveMatchesBarInternal() {
                 </div>
             </div>
         );
+    }
+    
+    if (matches.length === 0) {
+        return (
+             <div className="bg-background border-b">
+                <div className="container mx-auto max-w-7xl px-4">
+                    <div className="h-[124px] flex items-center">
+                        <p className="text-muted-foreground">No matches scheduled.</p>
+                    </div>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -109,3 +145,5 @@ function LiveMatchesBarInternal() {
 }
 
 export { LiveMatchesBarInternal as LiveMatchesBar };
+
+    

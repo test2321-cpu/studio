@@ -1,12 +1,15 @@
 
+
 'use client';
 
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { SectionWrapper } from '@/components/section-wrapper';
-import { matches } from '@/data/dummy-data';
+import { getMatches } from '@/services/matches';
 import {_decodeURIComponent} from 'next/dist/shared/lib/router/utils/querystring';
 import dynamic from 'next/dynamic';
+import { useEffect, useState } from 'react';
+import type { Match } from '@/lib/types';
 
 const MatchCard = dynamic(() => import('@/components/match-card').then(mod => mod.MatchCard), { 
   ssr: false,
@@ -25,7 +28,23 @@ const MatchCard = dynamic(() => import('@/components/match-card').then(mod => mo
 
 export default function TournamentMatchesPage({ params }: { params: { name: string } }) {
   const tournamentName = decodeURIComponent(params.name);
-  const tournamentMatches = matches.filter(m => m.tournament === tournamentName);
+  const [tournamentMatches, setTournamentMatches] = useState<Match[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMatches = async () => {
+      try {
+        const allMatches = await getMatches();
+        const filteredMatches = allMatches.filter(m => m.tournament === tournamentName);
+        setTournamentMatches(filteredMatches);
+      } catch (error) {
+        console.error("Failed to fetch tournament matches:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMatches();
+  }, [tournamentName]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -33,7 +52,9 @@ export default function TournamentMatchesPage({ params }: { params: { name: stri
       <main className="flex-grow">
         <SectionWrapper>
           <h1 className="text-3xl font-bold mb-8 text-center">{tournamentName}</h1>
-          {tournamentMatches.length > 0 ? (
+          {loading ? (
+            <div className="text-center text-muted-foreground">Loading matches...</div>
+          ) : tournamentMatches.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {tournamentMatches.map(match => (
                 <MatchCard key={match.id} match={match} />
@@ -50,3 +71,5 @@ export default function TournamentMatchesPage({ params }: { params: { name: stri
     </div>
   );
 }
+
+    
