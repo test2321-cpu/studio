@@ -76,6 +76,19 @@
       @apply font-bold text-foreground;
     }
 
+    ul, ol {
+      @apply list-inside my-4 space-y-2;
+    }
+    ul {
+      @apply list-disc;
+    }
+    ol {
+      @apply list-decimal;
+    }
+    li {
+      @apply ml-4;
+    }
+
     table {
         @apply w-full my-6 text-left border-collapse;
     }
