@@ -238,7 +238,9 @@ export function MatchForm({ match }: MatchFormProps) {
                  {(recentMatchFields as any).map((match: any, index: number) => (
                       <div key={index} className="p-2 border rounded-md space-y-2">
                         <FormField control={form.control} name={`recentMatches.${index}.id`} render={({ field }) => ( <FormItem> <FormLabel>Match ID</FormLabel> <FormControl><Input placeholder="Unique ID" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                        <FormField control={form.control} name={`recentMatches.${index}.type`} render={({ field }) => ( <FormItem> <FormLabel>Type</FormLabel> <FormControl><Input placeholder="e.g. T20I" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                         <FormField control={form.control} name={`recentMatches.${index}.date`} render={({ field }) => ( <FormItem> <FormLabel>Date</FormLabel> <FormControl><Input placeholder="e.g. 24 Jun 2024" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                        <FormField control={form.control} name={`recentMatches.${index}.status`} render={({ field }) => ( <FormItem> <FormLabel>Status</FormLabel> <FormControl><Input placeholder="e.g. Completed" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                         <FormField control={form.control} name={`recentMatches.${index}.teams.0.name`} render={({ field }) => ( <FormItem> <FormLabel>Team 1 Name</FormLabel> <FormControl><Input {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                         <FormField control={form.control} name={`recentMatches.${index}.teams.0.flag`} render={({ field }) => ( <FormItem> <FormLabel>Team 1 Flag</FormLabel> <FormControl><Input {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                         <FormField control={form.control} name={`recentMatches.${index}.teams.0.score`} render={({ field }) => ( <FormItem> <FormLabel>Team 1 Score</FormLabel> <FormControl><Input {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
@@ -260,5 +262,3 @@ export function MatchForm({ match }: MatchFormProps) {
     </div>
   );
 }
-
-    
