@@ -7,7 +7,7 @@ import { SectionWrapper } from '@/components/section-wrapper';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Check, Users, History, Swords } from 'lucide-react';
+import { Check, Users, History, Swords, Vote } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import type { Player, Match, HeadToHeadMatch, RecentMatch as RecentMatchType, MatchTeam } from '@/lib/types';
 import { CountdownTimer } from '@/components/countdown-timer';
@@ -97,10 +97,17 @@ export default function MatchPage() {
     const [isClient, setIsClient] = useState(false);
     const [dynamicStatus, setDynamicStatus] = useState<Match['status'] | undefined>();
     const { toast } = useToast();
+    const [hasVoted, setHasVoted] = useState(false);
 
     useEffect(() => {
         setIsClient(true);
         if (!matchId) return;
+
+        // Check if user has already voted
+        const votedStatus = localStorage.getItem(`voted_match_${matchId}`);
+        if (votedStatus) {
+            setHasVoted(true);
+        }
 
         const unsubscribe = onMatchUpdate(matchId, (match) => {
             setCurrentMatch(match);
@@ -123,10 +130,12 @@ export default function MatchPage() {
     }, [currentMatch]);
     
     const handleVote = async (team: 'teamA' | 'teamB') => {
-        if (!currentMatch) return;
+        if (!currentMatch || hasVoted) return;
         try {
             await addVoteToMatch(currentMatch.id, team);
             toast({ title: "Success", description: "Your vote has been counted!" });
+            localStorage.setItem(`voted_match_${currentMatch.id}`, 'true');
+            setHasVoted(true);
         } catch (error) {
             console.error("Failed to vote:", error);
             toast({ variant: "destructive", title: "Error", description: "Failed to cast your vote." });
@@ -196,7 +205,7 @@ export default function MatchPage() {
                         ) : (
                             <>
                                 <div className="bg-amber-100 text-amber-800 inline-block px-4 py-1 rounded-full text-sm font-semibold mb-3">
-                                    {dynamicStatus === 'Live' ? 'Live' : 'Match Ended'}
+                                    {dynamicStatus === 'Live' ? 'Live' : (dynamicStatus === 'Recent' ? 'Match Ended' : dynamicStatus)}
                                 </div>
                                 {currentMatch.result ? (
                                     <p className="text-lg text-muted-foreground">{currentMatch.result}</p>
@@ -238,10 +247,16 @@ export default function MatchPage() {
                                                 <Progress value={teamBPercentage} className="h-2" />
                                             </div>
                                         </div>
-                                        <div className="flex gap-4 mt-6">
-                                            <Button className="w-full" variant="outline" onClick={() => handleVote('teamA')}><Check className="mr-2 h-4 w-4" /> Vote {teams.a.name}</Button>
-                                            <Button className="w-full" variant="outline" onClick={() => handleVote('teamB')}><Check className="mr-2 h-4 w-4" /> Vote {teams.b.name}</Button>
-                                        </div>
+                                        {hasVoted ? (
+                                            <div className="mt-6 text-center text-sm text-muted-foreground font-medium flex items-center justify-center gap-2">
+                                                <Vote className="h-4 w-4" /> You have voted.
+                                            </div>
+                                        ) : (
+                                            <div className="flex gap-4 mt-6">
+                                                <Button className="w-full" variant="outline" onClick={() => handleVote('teamA')} disabled={hasVoted}><Check className="mr-2 h-4 w-4" /> Vote {teams.a.name}</Button>
+                                                <Button className="w-full" variant="outline" onClick={() => handleVote('teamB')} disabled={hasVoted}><Check className="mr-2 h-4 w-4" /> Vote {teams.b.name}</Button>
+                                            </div>
+                                        )}
                                     </CardContent>
                                 </Card>
                                 )}

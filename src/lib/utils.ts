@@ -12,8 +12,12 @@ function getCombinedDateTime(date: string, time: string): Date {
 }
 
 export const getDynamicMatchStatus = (match: Match): Match['status'] => {
+  // If the status is explicitly set to 'completed' or 'live', respect it first.
   if (match.status === 'completed') {
     return 'Recent';
+  }
+   if (match.status === 'live') {
+    return 'Live';
   }
 
   const now = new Date().getTime();
@@ -27,8 +31,10 @@ export const getDynamicMatchStatus = (match: Match): Match['status'] => {
   if (now < matchDateTime) {
     return 'Upcoming';
   } else if (now >= matchDateTime && now <= endTime) {
+    // If within the time window, but not explicitly 'completed', it's Live
     return 'Live';
   } else {
+    // If past the time window, it's Recent
     return 'Recent';
   }
 };
