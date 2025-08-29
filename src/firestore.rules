@@ -1,0 +1,27 @@
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow public read access to all collections
+    match /{document=**} {
+      allow read: if true;
+    }
+
+    // Allow admins to write to articles
+    match /articles/{articleId} {
+      allow write: if request.auth != null;
+    }
+    
+    // For matches, allow admins to write everything,
+    // but allow anyone to update only the poll votes.
+    match /matches/{matchId} {
+      // Admins can create, delete, and update any field
+      allow write: if request.auth != null;
+      
+      // Any user can update a match, but only if they are ONLY changing the poll field.
+      // This allows voting to work for the public.
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['poll']);
+    }
+  }
+}
