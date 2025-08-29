@@ -1,17 +1,14 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // Allow public read access to articles and matches for all users.
-    // This allows pages like news, match-centre, and individual match/article pages to load data.
-    match /articles/{articleId} {
+    match /{document=**} {
       allow read: if true;
-      allow write: if request.auth != null; // Only authenticated users can write
     }
-
+    match /articles/{articleId} {
+      allow create, update, delete: if request.auth != null;
+    }
     match /matches/{matchId} {
-      allow read: if true;
-      allow write: if request.auth != null; // Only authenticated users can write
+      allow create, update, delete: if request.auth != null;
     }
   }
 }
