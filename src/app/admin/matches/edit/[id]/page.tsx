@@ -39,14 +39,12 @@ export default function EditMatchPage({ params }: { params: { id: string } }) {
                  poll: {
                     teamA_votes: data.poll.teamA_votes,
                     teamB_votes: data.poll.teamB_votes,
-                }
+                },
+                playingXI: data.playingXI,
+                recentMatches: data.recentMatches,
+                headToHead: data.headToHead,
             };
-            if (!data.playingXI || data.playingXI.length === 0) {
-                matchData.playingXI = [];
-            }
-             if (!data.recentMatches || data.recentMatches.length === 0) {
-                matchData.recentMatches = [];
-            }
+            
             await updateMatch(match.id, matchData);
             toast({ title: "Success", description: "Match updated successfully." });
             router.push('/admin/matches');
@@ -79,7 +77,7 @@ export default function EditMatchPage({ params }: { params: { id: string } }) {
         },
         headToHead: match.headToHead || { summary: "", last5: [] },
         recentMatches: match.recentMatches || [],
-        playingXI: match.playingXI && match.playingXI.length > 0 ? match.playingXI : [],
+        playingXI: match.playingXI || [],
     };
 
     return <MatchForm isEditing defaultValues={defaultValues} onSubmitForm={handleSubmit} />;

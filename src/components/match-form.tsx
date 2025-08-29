@@ -59,7 +59,7 @@ const formSchema = z.object({
         result: z.string(),
       })
     ).max(5),
-  }),
+  }).optional(),
   poll: z.object({
     teamA_votes: z.string(),
     teamB_votes: z.string(),
@@ -93,6 +93,7 @@ interface MatchFormProps {
 export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: MatchFormProps) {
   const [hasPlayingXI, setHasPlayingXI] = useState(isEditing && !!defaultValues?.playingXI && defaultValues.playingXI.length > 0)
   const [hasRecentMatches, setHasRecentMatches] = useState(isEditing && !!defaultValues?.recentMatches && defaultValues.recentMatches.length > 0);
+  const [hasHeadToHead, setHasHeadToHead] = useState(isEditing && !!defaultValues?.headToHead);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -133,6 +134,9 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
     }
      if (!hasRecentMatches) {
       data.recentMatches = [];
+    }
+    if (!hasHeadToHead) {
+      data.headToHead = undefined;
     }
     onSubmitForm(data)
   }
@@ -217,7 +221,10 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>Playing XI</CardTitle>
+                <div>
+                  <CardTitle>Playing XI</CardTitle>
+                  <CardDescription>Toggle to add or skip Playing XI details.</CardDescription>
+                </div>
                 <div className="flex items-center space-x-2">
                     <Switch
                         id="has-playing-xi"
@@ -227,7 +234,6 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
                     <Label htmlFor="has-playing-xi">Enable</Label>
                 </div>
               </div>
-               <CardDescription>Toggle to add or skip Playing XI details.</CardDescription>
             </CardHeader>
             {hasPlayingXI && (
               <CardContent>
@@ -238,12 +244,35 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
               </CardContent>
             )}
           </Card>
-          <Card><CardHeader><CardTitle>Head-to-Head</CardTitle></CardHeader><CardContent><HeadToHeadFields control={form.control} /></CardContent></Card>
+          <Card>
+            <CardHeader>
+               <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Head-to-Head</CardTitle>
+                  <CardDescription>Toggle to add or skip H2H details.</CardDescription>
+                </div>
+                 <div className="flex items-center space-x-2">
+                    <Switch
+                        id="has-head-to-head"
+                        checked={hasHeadToHead}
+                        onCheckedChange={setHasHeadToHead}
+                    />
+                    <Label htmlFor="has-head-to-head">Enable</Label>
+                </div>
+              </div>
+            </CardHeader>
+            {hasHeadToHead && (
+                <CardContent><HeadToHeadFields control={form.control} /></CardContent>
+            )}
+          </Card>
           <Card><CardHeader><CardTitle>Poll</CardTitle></CardHeader><CardContent><PollFields control={form.control} /></CardContent></Card>
           <Card>
             <CardHeader>
                <div className="flex items-center justify-between">
-                <CardTitle>Recent Matches</CardTitle>
+                 <div>
+                    <CardTitle>Recent Matches</CardTitle>
+                    <CardDescription>Toggle to add or skip recent match history.</CardDescription>
+                 </div>
                  <div className="flex items-center space-x-2">
                     <Switch
                         id="has-recent-matches"
@@ -253,7 +282,6 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
                     <Label htmlFor="has-recent-matches">Enable</Label>
                 </div>
               </div>
-              <CardDescription>Toggle to add or skip recent match history.</CardDescription>
             </CardHeader>
             {hasRecentMatches && (
                 <CardContent>
