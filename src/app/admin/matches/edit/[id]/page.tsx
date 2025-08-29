@@ -33,15 +33,18 @@ export default function EditMatchPage({ params }: { params: { id: string } }) {
         if (!match) return;
 
         try {
-            const matchData = {
+            const matchData: Partial<Match> = {
                 ...data,
                 status: data.status as 'upcoming' | 'live' | 'completed',
                  poll: {
-                    teamA_votes: parseInt(data.poll.teamA_votes, 10),
-                    teamB_votes: parseInt(data.poll.teamB_votes, 10),
+                    teamA_votes: data.poll.teamA_votes,
+                    teamB_votes: data.poll.teamB_votes,
                 }
             };
-            await updateMatch(match.id, matchData as any);
+            if (!data.playingXI || data.playingXI.length === 0) {
+                matchData.playingXI = [];
+            }
+            await updateMatch(match.id, matchData);
             toast({ title: "Success", description: "Match updated successfully." });
             router.push('/admin/matches');
             router.refresh();
@@ -64,16 +67,17 @@ export default function EditMatchPage({ params }: { params: { id: string } }) {
     }
     
     // Convert match data to form-compatible default values
-    const defaultValues = {
+    const defaultValues: FormValues = {
         ...match,
+        status: match.status as 'upcoming' | 'live' | 'completed',
         poll: {
             teamA_votes: String(match.poll?.teamA_votes || 0),
             teamB_votes: String(match.poll?.teamB_votes || 0),
         },
         headToHead: match.headToHead || { summary: "", last5: [] },
         recentMatches: match.recentMatches || [],
-        playingXI: match.playingXI || [],
+        playingXI: match.playingXI && match.playingXI.length > 0 ? match.playingXI : [],
     };
 
-    return <MatchForm isEditing defaultValues={defaultValues as FormValues} onSubmitForm={handleSubmit} />;
+    return <MatchForm isEditing defaultValues={defaultValues} onSubmitForm={handleSubmit} />;
 }

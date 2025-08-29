@@ -1,9 +1,9 @@
-
 "use client"
 
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
+import { useState } from "react"
 
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -18,6 +18,7 @@ import { PlayingXIFields } from "./forms/PlayingXIFields"
 import { HeadToHeadFields } from "./forms/HeadToHeadFields"
 import { PollFields } from "./forms/PollFields"
 import { RecentMatchesFields } from "./forms/RecentMatchesFields"
+import { Switch } from "./ui/switch"
 
 const formSchema = z.object({
   tournament: z.string().min(1, "Tournament is required"),
@@ -34,15 +35,15 @@ const formSchema = z.object({
   result: z.string().optional(),
   playingXI: z.array(
     z.object({
-      team: z.string().min(1),
+      team: z.string(),
       players: z.array(
         z.object({
-          name: z.string().min(1),
-          role: z.string().min(1),
+          name: z.string(),
+          role: z.string(),
         })
-      ).length(11),
+      ),
     })
-  ).length(2),
+  ).optional(),
   headToHead: z.object({
     summary: z.string().optional(),
     last5: z.array(
@@ -89,6 +90,8 @@ interface MatchFormProps {
 }
 
 export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: MatchFormProps) {
+  const [hasPlayingXI, setHasPlayingXI] = useState(isEditing && !!defaultValues?.playingXI && defaultValues.playingXI.length > 0)
+  
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues || {
@@ -101,10 +104,7 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
       time: "",
       status: "upcoming",
       result: "",
-      playingXI: [
-        { team: "", players: Array(11).fill({ name: "", role: "" }) },
-        { team: "", players: Array(11).fill({ name: "", role: "" }) },
-      ],
+      playingXI: [],
       headToHead: { summary: "", last5: [] },
       poll: { teamA_votes: "0", teamB_votes: "0" },
       recentMatches: [],
@@ -112,19 +112,33 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
   })
 
   function onSubmit(data: FormValues) {
+    if (!hasPlayingXI) {
+        data.playingXI = [];
+    } else {
+        const team1Name = form.getValues("teams.0.name");
+        const team2Name = form.getValues("teams.1.name");
+        const playingXI = form.getValues("playingXI");
+        if (playingXI && playingXI[0] && !playingXI[0].team) playingXI[0].team = team1Name;
+        if (playingXI && playingXI[1] && !playingXI[1].team) playingXI[1].team = team2Name;
+
+        const filledPlayersTeam1 = playingXI?.[0]?.players.filter(p => p.name && p.role) || [];
+        const filledPlayersTeam2 = playingXI?.[1]?.players.filter(p => p.name && p.role) || [];
+
+        if (filledPlayersTeam1.length < 11 || filledPlayersTeam2.length < 11) {
+            form.setError("playingXI", { type: "manual", message: "Each team must have 11 players if Playing XI is enabled."});
+            return;
+        }
+    }
     onSubmitForm(data)
   }
+  
+  const statusOptions = ["upcoming", "live", "completed"];
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 p-4">
-      <div className="flex items-center space-x-2">
-        <Link href="/admin/matches">
-          <Button variant="outline" size="icon">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <h2 className="text-xl font-bold">{isEditing ? "Edit Match" : "New Match"}</h2>
-      </div>
+       <Button asChild variant="outline" size="sm" className="mb-4">
+            <Link href="/admin/matches"><ArrowLeft className="mr-2 h-4 w-4" />Back to Matches</Link>
+        </Button>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -162,22 +176,28 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
                 </FormItem>
               )}/>
               {/* Status */}
-              <FormField control={form.control} name="status" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="upcoming">Upcoming</SelectItem>
-                      <SelectItem value="live">Live</SelectItem>
-                      <SelectItem value="completed">Completed</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}/>
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {statusOptions.map(opt => (
+                          <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               {/* Result */}
               <FormField control={form.control} name="result" render={({ field }) => (
                 <FormItem>
@@ -189,7 +209,30 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
             </CardContent>
           </Card>
 
-          <Card><CardHeader><CardTitle>Playing XI</CardTitle></CardHeader><CardContent><PlayingXIFields control={form.control} /></CardContent></Card>
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Playing XI</CardTitle>
+                <div className="flex items-center space-x-2">
+                    <Switch
+                        id="has-playing-xi"
+                        checked={hasPlayingXI}
+                        onCheckedChange={setHasPlayingXI}
+                    />
+                    <Label htmlFor="has-playing-xi">Enable</Label>
+                </div>
+              </div>
+               <CardDescription>Toggle to add or skip Playing XI details.</CardDescription>
+            </CardHeader>
+            {hasPlayingXI && (
+              <CardContent>
+                <PlayingXIFields control={form.control} form={form}/>
+                {form.formState.errors.playingXI && (
+                  <p className="text-sm font-medium text-destructive mt-2">{form.formState.errors.playingXI.message}</p>
+                )}
+              </CardContent>
+            )}
+          </Card>
           <Card><CardHeader><CardTitle>Head-to-Head</CardTitle></CardHeader><CardContent><HeadToHeadFields control={form.control} /></CardContent></Card>
           <Card><CardHeader><CardTitle>Poll</CardTitle></CardHeader><CardContent><PollFields control={form.control} /></CardContent></Card>
           <Card><CardHeader><CardTitle>Recent Matches</CardTitle></CardHeader><CardContent><RecentMatchesFields control={form.control} /></CardContent></Card>
