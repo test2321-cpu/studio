@@ -1,5 +1,6 @@
 
-import type { Article, RankingTeam, MatchDetailsData } from '@/lib/types';
+
+import type { Article, MatchDetailsData } from '@/lib/types';
 
 // This file is now primarily for static data like rankings and article details stubs.
 // Match data is fetched directly from Firestore.
@@ -176,30 +177,6 @@ export const articles: Article[] = [
 ];
 
 
-export const rankings_odi: RankingTeam[] = [
-  { rank: 1, team: 'Australia', rating: 121, flag: 'australia' },
-  { rank: 2, team: 'India', rating: 119, flag: 'india' },
-  { rank: 3, team: 'Pakistan', rating: 115, flag: 'pakistan' },
-  { rank: 4, team: 'South Africa', rating: 106, flag: 'south-africa' },
-  { rank: 5, team: 'New Zealand', rating: 103, flag: 'new-zealand' },
-];
-
-export const rankings_t20i: RankingTeam[] = [
-  { rank: 1, team: 'India', rating: 265, flag: 'india' },
-  { rank: 2, team: 'England', rating: 261, flag: 'england' },
-  { rank: 3, team: 'Australia', rating: 257, flag: 'australia' },
-  { rank: 4, team: 'New Zealand', rating: 254, flag: 'new-zealand' },
-  { rank: 5, team: 'South Africa', rating: 253, flag: 'south-africa' },
-];
-
-export const rankings_test: RankingTeam[] = [
-  { rank: 1, team: 'Australia', rating: 124, flag: 'australia' },
-  { rank: 2, team: 'India', rating: 120, flag: 'india' },
-  { rank: 3, team: 'England', rating: 116, flag: 'england' },
-  { rank: 4, team: 'South Africa', rating: 104, flag: 'south-africa' },
-  { rank: 5, team: 'New Zealand', rating: 100, flag: 'new-zealand' },
-];
-
 const matchDetailsData: { [key: string]: MatchDetailsData } = {
   "1": {
     details: {
@@ -245,5 +222,3 @@ export const getMatchDetailsById = (id: string): MatchDetailsData | undefined =>
   // We return a generic object for now as the detailed view is complex.
   return Object.values(matchDetailsData)[0];
 };
-
-    

@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { app } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { LogOut, Newspaper, Shield } from "lucide-react";
+import { LogOut, Newspaper, Shield, Trophy } from "lucide-react";
 import { Logo } from "@/components/logo";
 import Link from "next/link";
 
@@ -57,7 +57,7 @@ export default function AdminDashboardPage() {
             <main className="flex-grow p-8">
                 <div className="container mx-auto max-w-7xl">
                     <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2"><Newspaper /> Manage Articles</CardTitle>
@@ -77,6 +77,17 @@ export default function AdminDashboardPage() {
                             <CardContent>
                                 <Button asChild>
                                   <Link href="/admin/matches">Go to Matches</Link>
+                                </Button>
+                            </CardContent>
+                        </Card>
+                         <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2"><Trophy /> Manage Rankings</CardTitle>
+                                <CardDescription>Update team rankings for all formats.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <Button asChild>
+                                  <Link href="/admin/rankings">Go to Rankings</Link>
                                 </Button>
                             </CardContent>
                         </Card>

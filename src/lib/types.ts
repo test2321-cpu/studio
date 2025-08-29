@@ -1,5 +1,6 @@
 
 
+
 export interface Team {
   id: string;
   name: string;
@@ -88,6 +89,8 @@ export interface Article {
 }
 
 export interface RankingTeam {
+  id: string;
+  format: 't20i' | 'odi' | 'test';
   rank: number;
   team: string;
   rating: number;

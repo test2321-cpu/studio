@@ -1,3 +1,6 @@
+
+'use client';
+
 import {
   Table,
   TableBody,
@@ -12,21 +15,17 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/components/ui/tabs';
-import {
-  rankings_odi,
-  rankings_t20i,
-  rankings_test,
-} from '@/data/dummy-data';
+import { getRankings } from '@/services/rankings';
 import type { RankingTeam } from '@/lib/types';
 import { Card } from './ui/card';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 interface RankingsTableProps {
-  title: string;
   data: RankingTeam[];
 }
 
-function RankingsTable({ title, data }: RankingsTableProps) {
+function RankingsTable({ data }: RankingsTableProps) {
   return (
     <Card>
       <Table>
@@ -39,7 +38,7 @@ function RankingsTable({ title, data }: RankingsTableProps) {
         </TableHeader>
         <TableBody>
           {data.map((team) => (
-            <TableRow key={team.rank}>
+            <TableRow key={team.id}>
               <TableCell className="font-medium">{team.rank}</TableCell>
               <TableCell className="font-medium flex items-center gap-3">
                 <Image src={`https://cdn.countryflags.com/thumbs/${team.flag}/flag-400.png`} alt={team.team} width={24} height={18} className="object-contain" />
@@ -55,6 +54,31 @@ function RankingsTable({ title, data }: RankingsTableProps) {
 }
 
 export function RankingsSection() {
+    const [rankings, setRankings] = useState<RankingTeam[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchRankings = async () => {
+            try {
+                const fetchedRankings = await getRankings();
+                setRankings(fetchedRankings);
+            } catch (error) {
+                console.error("Failed to fetch rankings:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchRankings();
+    }, []);
+    
+    if (loading) {
+        return <p className="text-center text-muted-foreground">Loading rankings...</p>;
+    }
+
+    const t20iData = rankings.filter(r => r.format === 't20i');
+    const odiData = rankings.filter(r => r.format === 'odi');
+    const testData = rankings.filter(r => r.format === 'test');
+
     return (
         <Tabs defaultValue="t20i" className="w-full">
             <TabsList className="grid w-full grid-cols-3 md:w-[400px]">
@@ -63,13 +87,13 @@ export function RankingsSection() {
                 <TabsTrigger value="test">Test</TabsTrigger>
             </TabsList>
             <TabsContent value="t20i">
-                <RankingsTable title="T20I Rankings" data={rankings_t20i} />
+                <RankingsTable data={t20iData} />
             </TabsContent>
             <TabsContent value="odi">
-                <RankingsTable title="ODI Rankings" data={rankings_odi} />
+                <RankingsTable data={odiData} />
             </TabsContent>
             <TabsContent value="test">
-                <RankingsTable title="Test Rankings" data={rankings_test} />
+                <RankingsTable data={testData} />
             </TabsContent>
         </Tabs>
     )
