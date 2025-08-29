@@ -33,7 +33,7 @@ export default function EditMatchPage({ params }: { params: { id: string } }) {
         if (!match) return;
 
         try {
-            const matchData: Partial<Match> = {
+            const matchData: { [key: string]: any } = {
                 ...data,
                 status: data.status as 'upcoming' | 'live' | 'completed',
                  poll: {
@@ -44,6 +44,13 @@ export default function EditMatchPage({ params }: { params: { id: string } }) {
                 recentMatches: data.recentMatches,
                 headToHead: data.headToHead,
             };
+
+            // Clean the object of any undefined or empty string values before updating
+            for (const key in matchData) {
+                if (matchData[key] === undefined || matchData[key] === '') {
+                    delete matchData[key];
+                }
+            }
             
             await updateMatch(match.id, matchData);
             toast({ title: "Success", description: "Match updated successfully." });

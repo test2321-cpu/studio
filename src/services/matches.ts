@@ -22,18 +22,12 @@ function processMatchDoc(doc: DocumentData): Match {
     tournamentLogo: data.tournamentLogo,
     end_date: data.end_date,
     end_time: data.end_time,
+    details: data.details,
+    playingXI: data.playingXI,
+    headToHead: data.headToHead,
+    poll: data.poll,
+    recentMatches: data.recentMatches,
   };
-
-  const now = new Date();
-  const matchDateTime = getCombinedDateTime(match.start_date, match.start_time);
-
-  if (match.status !== 'Recent') {
-      if (now > matchDateTime) {
-          // If current time is past match time, but it's not marked recent, it's probably live or just ended.
-          // A more sophisticated system might have a "Live" window.
-          // For now, we'll rely on the status set in the form.
-      }
-  }
   
   return match;
 }
@@ -64,7 +58,18 @@ export async function getMatchById(id: string): Promise<Match | null> {
 // Create a new match
 export async function createMatch(match: Omit<Match, 'id'>): Promise<string> {
     const matchesCol = collection(db, 'matches');
-    const docRef = await addDoc(matchesCol, match);
+    
+    // Create a copy to avoid mutating the original object
+    const cleanedMatch: { [key: string]: any } = { ...match };
+
+    // Clean the object of any undefined or empty string values
+    for (const key in cleanedMatch) {
+        if (cleanedMatch[key] === undefined || cleanedMatch[key] === '') {
+            delete cleanedMatch[key];
+        }
+    }
+    
+    const docRef = await addDoc(matchesCol, cleanedMatch);
     return docRef.id;
 }
 
