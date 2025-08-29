@@ -6,7 +6,7 @@ import type { RankingTeam } from '@/lib/types';
 const rankingsCol = collection(db, 'rankings');
 
 export async function getRankings(): Promise<RankingTeam[]> {
-  const q = query(rankingsCol, orderBy('format'), orderBy('rank'));
+  const q = query(rankingsCol, orderBy('rank'));
   const rankingsSnapshot = await getDocs(q);
   const rankingsList = rankingsSnapshot.docs.map(doc => {
     const data = doc.data() as DocumentData;
