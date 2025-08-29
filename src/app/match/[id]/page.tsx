@@ -15,6 +15,7 @@ import { getDynamicMatchStatus } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { getMatchById } from '@/services/matches';
+import { useParams } from 'next/navigation';
 
 const TeamDisplay = ({ name, flag }: { name: string, flag: string }) => (
     <div className="flex items-center text-3xl md:text-5xl font-bold gap-4">
@@ -70,7 +71,9 @@ const PlayerCard = ({ player }: { player: Player }) => (
     </div>
 );
 
-export default function MatchPage({ params }: { params: { id: string } }) {
+export default function MatchPage() {
+    const params = useParams();
+    const matchId = params.id as string;
     const [currentMatch, setCurrentMatch] = useState<Match | null>(null);
     const [loading, setLoading] = useState(true);
     const [isClient, setIsClient] = useState(false);
@@ -78,9 +81,11 @@ export default function MatchPage({ params }: { params: { id: string } }) {
 
     useEffect(() => {
         setIsClient(true);
+        if (!matchId) return;
+
         const fetchMatch = async () => {
             try {
-                const match = await getMatchById(params.id);
+                const match = await getMatchById(matchId);
                 setCurrentMatch(match);
                 if (match) {
                     setDynamicStatus(getDynamicMatchStatus(match));
@@ -92,7 +97,7 @@ export default function MatchPage({ params }: { params: { id: string } }) {
             }
         };
         fetchMatch();
-    }, [params.id]);
+    }, [matchId]);
 
     useEffect(() => {
         if (currentMatch) {
