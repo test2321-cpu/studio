@@ -1,3 +1,4 @@
+
 'use client';
 
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
@@ -71,10 +72,12 @@ export default function AdminDashboardPage() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2"><Shield /> Manage Matches</CardTitle>
-                                <CardDescription>Update match details, scores, and player info. (Coming soon)</CardDescription>
+                                <CardDescription>Update match details, scores, and status.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <Button disabled>Go to Matches</Button>
+                                <Button asChild>
+                                  <Link href="/admin/matches">Go to Matches</Link>
+                                </Button>
                             </CardContent>
                         </Card>
                     </div>

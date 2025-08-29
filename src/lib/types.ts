@@ -1,15 +1,23 @@
 
+export interface Team {
+  id: string;
+  name: string;
+  flag: string; // e.g., 'india'
+}
+
+export interface MatchTeam {
+    name: string;
+    flag: string;
+    score?: string;
+}
+
 export interface Match {
-  id: number;
-  status: 'Live' | 'Upcoming' | 'Recent';
+  id: string; // Firestore document ID
   tournament: string;
-  teams: [
-    { name: string; score?: string; flag: string },
-    { name: string; score?: string; flag: string }
-  ];
-  date: string;
-  startTime: string;
-  endTime: string;
+  teams: [MatchTeam, MatchTeam];
+  date: string; // Stored as 'YYYY-MM-DD'
+  time: string; // Stored as 'HH:MM'
+  status: 'Upcoming' | 'Live' | 'Recent';
   result?: string;
 }
 
