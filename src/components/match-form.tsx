@@ -175,7 +175,7 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
               <FormField control={form.control} name="tournamentLogo" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Tournament Logo URL (Optional)</FormLabel>
-                  <FormControl><Input placeholder="https://example.com/logo.png" {...field} /></FormControl>
+                  <FormControl><Input placeholder="https://example.com/logo.png" {...field} value={field.value ?? ''} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}/>
@@ -202,14 +202,14 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
                   <FormField control={form.control} name="end_date" render={({ field }) => (
                     <FormItem>
                       <FormLabel>End Date (Optional)</FormLabel>
-                      <FormControl><Input type="date" {...field} /></FormControl>
+                      <FormControl><Input type="date" {...field} value={field.value ?? ''} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}/>
                   <FormField control={form.control} name="end_time" render={({ field }) => (
                     <FormItem>
                       <FormLabel>End Time (Optional)</FormLabel>
-                      <FormControl><Input type="time" {...field} /></FormControl>
+                      <FormControl><Input type="time" {...field} value={field.value ?? ''} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}/>
@@ -239,7 +239,7 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
               <FormField control={form.control} name="result" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Result</FormLabel>
-                  <FormControl><Input placeholder="Match Result" {...field} /></FormControl>
+                  <FormControl><Input placeholder="Match Result" {...field} value={field.value ?? ''} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}/>

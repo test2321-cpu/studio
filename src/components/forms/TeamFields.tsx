@@ -37,7 +37,7 @@ export function TeamFields({ control }: TeamFieldsProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Team Logo URL (Optional)</FormLabel>
-                <FormControl><Input placeholder="https://example.com/logo.png" {...field} /></FormControl>
+                <FormControl><Input placeholder="https://example.com/logo.png" {...field} value={field.value ?? ''} /></FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -59,7 +59,7 @@ export function TeamFields({ control }: TeamFieldsProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Score (Optional)</FormLabel>
-                <FormControl><Input placeholder="e.g., 150/2 (15.3 ov)" {...field} /></FormControl>
+                <FormControl><Input placeholder="e.g., 150/2 (15.3 ov)" {...field} value={field.value ?? ''} /></FormControl>
                 <FormMessage />
               </FormItem>
             )}
