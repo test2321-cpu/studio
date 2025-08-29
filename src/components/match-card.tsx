@@ -75,6 +75,17 @@ function MatchCardInternal({ match }: { match: Match }) {
       </Card>
     )
   }
+  
+  const TeamImage = ({ team }: { team: typeof match.teams[0] }) => (
+    <Image 
+        src={team.logo || `https://cdn.countryflags.com/thumbs/${team.flag}/flag-400.png`} 
+        alt={team.name} 
+        width={24} 
+        height={18} 
+        className="object-contain" 
+    />
+  );
+
 
   return (
     <Link href={`/match/${match.id}`} className="block hover:shadow-lg transition-shadow rounded-lg">
@@ -92,12 +103,12 @@ function MatchCardInternal({ match }: { match: Match }) {
             </CardHeader>
             <CardContent className="flex-grow space-y-2 text-sm">
                 <div className="flex items-center font-medium gap-3">
-                    <Image src={`https://cdn.countryflags.com/thumbs/${match.teams[0].flag}/flag-400.png`} alt={match.teams[0].name} width={24} height={18} className="object-contain" />
+                    <TeamImage team={match.teams[0]} />
                     <span>{match.teams[0].name}</span>
                     {match.teams[0].score && <span className="ml-auto font-bold">{match.teams[0].score}</span>}
                 </div>
                 <div className="flex items-center font-medium gap-3">
-                    <Image src={`https://cdn.countryflags.com/thumbs/${match.teams[1].flag}/flag-400.png`} alt={match.teams[1].name} width={24} height={18} className="object-contain" />
+                    <TeamImage team={match.teams[1]} />
                     <span>{match.teams[1].name}</span>
                     {match.teams[1].score && <span className="ml-auto font-bold">{match.teams[1].score}</span>}
                 </div>

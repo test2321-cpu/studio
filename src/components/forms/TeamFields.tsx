@@ -47,8 +47,8 @@ export function TeamFields({ control }: TeamFieldsProps) {
             name={`teams.${index}.flag`}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Flag Name</FormLabel>
-                <FormControl><Input placeholder="e.g., india" {...field} /></FormControl>
+                <FormLabel>Flag Name (Optional)</FormLabel>
+                <FormControl><Input placeholder="e.g., india" {...field} value={field.value ?? ''} /></FormControl>
                 <FormMessage />
               </FormItem>
             )}

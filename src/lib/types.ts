@@ -8,7 +8,7 @@ export interface Team {
 
 export interface MatchTeam {
     name: string;
-    flag: string;
+    flag?: string;
     score?: string;
     logo?: string;
 }

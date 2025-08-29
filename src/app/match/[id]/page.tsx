@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Check, Users, History, Swords } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
-import type { Player, Match, HeadToHeadMatch, RecentMatch as RecentMatchType } from '@/lib/types';
+import type { Player, Match, HeadToHeadMatch, RecentMatch as RecentMatchType, MatchTeam } from '@/lib/types';
 import { CountdownTimer } from '@/components/countdown-timer';
 import { getDynamicMatchStatus } from '@/lib/utils';
 import { useEffect, useState } from 'react';
@@ -17,10 +17,16 @@ import Image from 'next/image';
 import { getMatchById } from '@/services/matches';
 import { useParams } from 'next/navigation';
 
-const TeamDisplay = ({ name, flag }: { name: string, flag: string }) => (
+const TeamDisplay = ({ team }: { team: MatchTeam }) => (
     <div className="flex items-center text-3xl md:text-5xl font-bold gap-4">
-        <Image src={`https://cdn.countryflags.com/thumbs/${flag}/flag-400.png`} alt={name} width={60} height={40} className="object-contain" />
-        <h2>{name}</h2>
+        <Image 
+            src={team.logo || `https://cdn.countryflags.com/thumbs/${team.flag}/flag-400.png`} 
+            alt={team.name} 
+            width={60} 
+            height={40} 
+            className="object-contain" 
+        />
+        <h2>{team.name}</h2>
     </div>
 );
 
@@ -31,27 +37,38 @@ const MatchInfo = ({ label, value }: { label: string, value: string | undefined 
     </div>
 );
 
-const RecentMatch = ({ match }: { match: RecentMatchType }) => (
-    <div className="flex items-center justify-between p-4 border-b last:border-b-0">
-        <div>
-            <div className="text-xs text-muted-foreground">{match.type} &bull; {match.date}</div>
-            <div className="flex flex-col gap-1 mt-2">
-                <div className="flex items-center gap-2 font-medium">
-                    <Image src={`https://cdn.countryflags.com/thumbs/${match.teams[0].flag}/flag-400.png`} alt={match.teams[0].name} width={20} height={15} className="object-contain" /> {match.teams[0].name}
-                    <span className="ml-auto font-bold">{match.teams[0].score}</span>
+const RecentMatch = ({ match }: { match: RecentMatchType }) => {
+    const TeamImage = ({ team }: { team: MatchTeam }) => (
+        <Image 
+            src={team.logo || `https://cdn.countryflags.com/thumbs/${team.flag}/flag-400.png`} 
+            alt={team.name} 
+            width={20} 
+            height={15} 
+            className="object-contain" 
+        />
+    );
+    return (
+        <div className="flex items-center justify-between p-4 border-b last:border-b-0">
+            <div>
+                <div className="text-xs text-muted-foreground">{match.type} &bull; {match.date}</div>
+                <div className="flex flex-col gap-1 mt-2">
+                    <div className="flex items-center gap-2 font-medium">
+                        <TeamImage team={match.teams[0]} /> {match.teams[0].name}
+                        <span className="ml-auto font-bold">{match.teams[0].score}</span>
+                    </div>
+                     <div className="flex items-center gap-2 font-medium">
+                        <TeamImage team={match.teams[1]} /> {match.teams[1].name}
+                        <span className="ml-auto font-bold">{match.teams[1].score}</span>
+                    </div>
                 </div>
-                 <div className="flex items-center gap-2 font-medium">
-                    <Image src={`https://cdn.countryflags.com/thumbs/${match.teams[1].flag}/flag-400.png`} alt={match.teams[1].name} width={20} height={15} className="object-contain" /> {match.teams[1].name}
-                    <span className="ml-auto font-bold">{match.teams[1].score}</span>
-                </div>
+                <p className="text-sm mt-2 text-primary">{match.result}</p>
             </div>
-            <p className="text-sm mt-2 text-primary">{match.result}</p>
+            <div className="text-xs font-semibold text-muted-foreground self-start mt-1">
+                {match.status}
+            </div>
         </div>
-        <div className="text-xs font-semibold text-muted-foreground self-start mt-1">
-            {match.status}
-        </div>
-    </div>
-);
+    )
+};
 
 const HeadToHeadResult = ({ match }: { match: HeadToHeadMatch }) => (
     <div className="text-sm p-3 bg-muted/50 rounded-lg">
@@ -155,9 +172,9 @@ export default function MatchPage() {
                     </div>
 
                     <div className="flex items-center justify-around my-8">
-                        <TeamDisplay name={teams.a.name} flag={teams.a.flag} />
+                        <TeamDisplay team={teams.a} />
                         <div className="text-center text-primary font-bold text-lg">VS</div>
-                        <TeamDisplay name={teams.b.name} flag={teams.b.flag} />
+                        <TeamDisplay team={teams.b} />
                     </div>
 
                     <div className="text-center">

@@ -27,7 +27,7 @@ const formSchema = z.object({
   teams: z.array(
     z.object({
       name: z.string().min(1, "Team name is required"),
-      flag: z.string().min(1, "Flag is required"),
+      flag: z.string().optional(),
       score: z.string().optional(),
       logo: z.string().url().optional().or(z.literal('')),
     })
