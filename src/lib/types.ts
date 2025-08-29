@@ -44,8 +44,8 @@ export interface MatchDetails {
 }
 
 export interface Poll {
-    teamA_votes?: number;
-    teamB_votes?: number;
+    teamA_votes: string;
+    teamB_votes: string;
 }
 
 
@@ -55,7 +55,7 @@ export interface Match {
   teams: [MatchTeam, MatchTeam];
   date: string; // Stored as 'YYYY-MM-DD'
   time: string; // Stored as 'HH:MM'
-  status: 'Upcoming' | 'Live' | 'Recent';
+  status: 'Upcoming' | 'Live' | 'Recent' | 'completed' | 'upcoming';
   result?: string;
 
   // Detailed view fields (optional)
