@@ -55,20 +55,32 @@ export async function getMatchById(id: string): Promise<Match | null> {
     }
 }
 
+// Recursively remove undefined, null, or empty string properties from an object
+const cleanObject = (obj: any): any => {
+    if (Array.isArray(obj)) {
+        return obj
+            .map(v => (v && typeof v === 'object') ? cleanObject(v) : v)
+            .filter(v => v !== null && v !== undefined && v !== '');
+    } else if (obj !== null && typeof obj === 'object') {
+        return Object.keys(obj).reduce(
+            (acc, key) => {
+                const value = obj[key];
+                if (value === undefined || value === '') {
+                    return acc;
+                }
+                acc[key] = (value && typeof value === 'object') ? cleanObject(value) : value;
+                return acc;
+            },
+            {} as { [key: string]: any }
+        );
+    }
+    return obj;
+};
+
 // Create a new match
 export async function createMatch(match: Omit<Match, 'id'>): Promise<string> {
     const matchesCol = collection(db, 'matches');
-    
-    // Create a copy to avoid mutating the original object
-    const cleanedMatch: { [key: string]: any } = { ...match };
-
-    // Clean the object of any undefined or empty string values
-    for (const key in cleanedMatch) {
-        if (cleanedMatch[key] === undefined || cleanedMatch[key] === '') {
-            delete cleanedMatch[key];
-        }
-    }
-    
+    const cleanedMatch = cleanObject(match);
     const docRef = await addDoc(matchesCol, cleanedMatch);
     return docRef.id;
 }
@@ -76,7 +88,8 @@ export async function createMatch(match: Omit<Match, 'id'>): Promise<string> {
 // Update an existing match
 export async function updateMatch(id: string, match: Partial<Omit<Match, 'id'>>): Promise<void> {
     const matchDocRef = doc(db, 'matches', id);
-    await updateDoc(matchDocRef, match);
+    const cleanedMatch = cleanObject(match);
+    await updateDoc(matchDocRef, cleanedMatch);
 }
 
 // Delete a match
