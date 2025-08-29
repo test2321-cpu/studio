@@ -1,4 +1,5 @@
 
+
 export interface Team {
   id: string;
   name: string;
@@ -11,6 +12,43 @@ export interface MatchTeam {
     score?: string;
 }
 
+export interface Player {
+  name:string;
+  role: string;
+}
+
+export interface PlayingXI {
+  team: string;
+  players: Player[];
+}
+
+export interface RecentMatch {
+  id: string;
+  type: string;
+  date: string;
+  status: string;
+  teams: MatchTeam[];
+  result: string;
+}
+
+export interface HeadToHeadMatch {
+  teams: MatchTeam[];
+  result: string;
+}
+
+export interface MatchDetails {
+    venue?: string;
+    toss?: string;
+    season?: string;
+    format?: string;
+}
+
+export interface Poll {
+    teamA_votes?: number;
+    teamB_votes?: number;
+}
+
+
 export interface Match {
   id: string; // Firestore document ID
   tournament: string;
@@ -19,7 +57,18 @@ export interface Match {
   time: string; // Stored as 'HH:MM'
   status: 'Upcoming' | 'Live' | 'Recent';
   result?: string;
+
+  // Detailed view fields (optional)
+  details?: MatchDetails;
+  playingXI?: PlayingXI[];
+  headToHead?: {
+      summary?: string;
+      last5?: HeadToHeadMatch[];
+  };
+  poll?: Poll;
+  recentMatches?: RecentMatch[];
 }
+
 
 export interface Article {
   id: string; // Changed to string to accommodate firestore doc id
@@ -41,10 +90,6 @@ export interface RankingTeam {
   flag: string;
 }
 
-export interface Player {
-  name: string;
-  role: 'Batsman' | 'Bowler' | 'All-rounder' | 'Wicketkeeper';
-}
 
 export interface MatchDetailsData {
   details: {
@@ -69,7 +114,7 @@ export interface MatchDetailsData {
     b: { votes: number; percentage: number; };
   };
   recentMatches: Array<{
-    id: number;
+    id: string;
     type: string;
     date: string;
     status: string;

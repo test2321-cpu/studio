@@ -5,12 +5,11 @@ import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { SectionWrapper } from '@/components/section-wrapper';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getMatchDetailsById } from '@/data/dummy-data';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Check, Users, History, Swords } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
-import type { Player, Match } from '@/lib/types';
+import type { Player, Match, HeadToHeadMatch, RecentMatch as RecentMatchType } from '@/lib/types';
 import { CountdownTimer } from '@/components/countdown-timer';
 import { getDynamicMatchStatus } from '@/lib/utils';
 import { useEffect, useState } from 'react';
@@ -31,7 +30,7 @@ const MatchInfo = ({ label, value }: { label: string, value: string | undefined 
     </div>
 );
 
-const RecentMatch = ({ match }: { match: any }) => (
+const RecentMatch = ({ match }: { match: RecentMatchType }) => (
     <div className="flex items-center justify-between p-4 border-b last:border-b-0">
         <div>
             <div className="text-xs text-muted-foreground">{match.type} &bull; {match.date}</div>
@@ -53,6 +52,17 @@ const RecentMatch = ({ match }: { match: any }) => (
     </div>
 );
 
+const HeadToHeadResult = ({ match }: { match: HeadToHeadMatch }) => (
+    <div className="text-sm p-3 bg-muted/50 rounded-lg">
+        <div className="flex justify-between">
+            <span>{match.teams[0].name} <span className="font-bold">{match.teams[0].score}</span></span>
+            <span>vs</span>
+            <span><span className="font-bold">{match.teams[1].score}</span> {match.teams[1].name}</span>
+        </div>
+        <p className="text-xs text-primary mt-1 text-center">{match.result}</p>
+    </div>
+)
+
 const PlayerCard = ({ player }: { player: Player }) => (
     <div className="p-3 bg-muted/50 rounded-lg flex justify-between items-center">
         <span className="font-medium">{player.name}</span>
@@ -63,25 +73,27 @@ const PlayerCard = ({ player }: { player: Player }) => (
 export default function MatchPage({ params }: { params: { id: string } }) {
     const [currentMatch, setCurrentMatch] = useState<Match | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isClient, setIsClient] = useState(false);
     const [dynamicStatus, setDynamicStatus] = useState<Match['status'] | undefined>();
 
     useEffect(() => {
-      const fetchMatch = async () => {
-        try {
-          const match = await getMatchById(params.id);
-          setCurrentMatch(match);
-          if (match) {
-            setDynamicStatus(getDynamicMatchStatus(match));
-          }
-        } catch (error) {
-          console.error("Failed to fetch match:", error);
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchMatch();
+        setIsClient(true);
+        const fetchMatch = async () => {
+            try {
+                const match = await getMatchById(params.id);
+                setCurrentMatch(match);
+                if (match) {
+                    setDynamicStatus(getDynamicMatchStatus(match));
+                }
+            } catch (error) {
+                console.error("Failed to fetch match:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchMatch();
     }, [params.id]);
-    
+
     useEffect(() => {
         if (currentMatch) {
             const interval = setInterval(() => {
@@ -92,36 +104,38 @@ export default function MatchPage({ params }: { params: { id: string } }) {
     }, [currentMatch]);
 
 
-    if (loading) {
-      return (
-        <div className="flex flex-col min-h-screen">
-          <Header />
-            <main className="flex-grow flex items-center justify-center">
-                <div className="text-center p-8">
-                    <p className="text-muted-foreground">Loading match details...</p>
-                </div>
-            </main>
-          <Footer />
-        </div>
-      );
+    if (loading || !isClient) {
+        return (
+            <div className="flex flex-col min-h-screen">
+                <Header />
+                <main className="flex-grow flex items-center justify-center">
+                    <div className="text-center p-8">
+                        <p className="text-muted-foreground">Loading match details...</p>
+                    </div>
+                </main>
+                <Footer />
+            </div>
+        );
     }
-    
+
     if (!currentMatch) {
-      return (
-        <div className="flex flex-col min-h-screen">
-          <Header />
-          <main className="flex-grow flex items-center justify-center">
-            <h1 className="text-2xl font-bold">Match not found</h1>
-          </main>
-          <Footer />
-        </div>
-      );
+        return (
+            <div className="flex flex-col min-h-screen">
+                <Header />
+                <main className="flex-grow flex items-center justify-center">
+                    <h1 className="text-2xl font-bold">Match not found</h1>
+                </main>
+                <Footer />
+            </div>
+        );
     }
-    
-    // Using mock data for details as it's not in our Firestore model
-    const matchDetails = getMatchDetailsById(params.id);
-    const { details, poll, recentMatches, playingXI, headToHead } = matchDetails || {};
+
+    const { details, poll, recentMatches, playingXI, headToHead } = currentMatch;
     const teams = { a: currentMatch.teams[0], b: currentMatch.teams[1] };
+    
+    const totalVotes = (poll?.teamA_votes || 0) + (poll?.teamB_votes || 0);
+    const teamAPercentage = totalVotes > 0 ? Math.round(((poll?.teamA_votes || 0) / totalVotes) * 100) : 0;
+    const teamBPercentage = totalVotes > 0 ? 100 - teamAPercentage : 0;
 
 
     return (
@@ -176,16 +190,16 @@ export default function MatchPage({ params }: { params: { id: string } }) {
                                             <div>
                                                 <div className="flex justify-between mb-1 text-sm">
                                                     <span>{teams.a.name}</span>
-                                                    <span>{poll.a.percentage}% ({poll.a.votes})</span>
+                                                    <span>{teamAPercentage}% ({poll.teamA_votes || 0})</span>
                                                 </div>
-                                                <Progress value={poll.a.percentage} className="h-2" />
+                                                <Progress value={teamAPercentage} className="h-2" />
                                             </div>
                                             <div>
                                                 <div className="flex justify-between mb-1 text-sm">
                                                     <span>{teams.b.name}</span>
-                                                    <span>{poll.b.percentage}% ({poll.b.votes})</span>
+                                                    <span>{teamBPercentage}% ({poll.teamB_votes || 0})</span>
                                                 </div>
-                                                <Progress value={poll.b.percentage} className="h-2" />
+                                                <Progress value={teamBPercentage} className="h-2" />
                                             </div>
                                         </div>
                                         <div className="flex gap-4 mt-6">
@@ -232,7 +246,7 @@ export default function MatchPage({ params }: { params: { id: string } }) {
                                     </Card>
                                     )}
 
-                                    {headToHead && headToHead.last5.length > 0 && (
+                                    {headToHead && headToHead.last5 && headToHead.last5.length > 0 && (
                                     <Card>
                                         <CardHeader>
                                             <CardTitle className="flex items-center gap-2"><Swords /> Head-to-Head</CardTitle>
@@ -242,14 +256,7 @@ export default function MatchPage({ params }: { params: { id: string } }) {
                                             <h4 className="font-semibold mb-3">Last 5 Matches</h4>
                                             <div className="space-y-3">
                                                 {headToHead.last5.map((match, i) => (
-                                                    <div key={i} className="text-sm p-3 bg-muted/50 rounded-lg">
-                                                        <div className="flex justify-between">
-                                                            <span>{match.teams[0].name} <span className="font-bold">{match.teams[0].score}</span></span>
-                                                            <span>vs</span>
-                                                            <span><span className="font-bold">{match.teams[1].score}</span> {match.teams[1].name}</span>
-                                                        </div>
-                                                        <p className="text-xs text-primary mt-1 text-center">{match.result}</p>
-                                                    </div>
+                                                   <HeadToHeadResult key={i} match={match} />
                                                 ))}
                                             </div>
                                         </CardContent>
@@ -281,5 +288,3 @@ export default function MatchPage({ params }: { params: { id: string } }) {
         </div>
     );
 }
-
-    
