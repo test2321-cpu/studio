@@ -19,6 +19,7 @@ import { HeadToHeadFields } from "./forms/HeadToHeadFields"
 import { PollFields } from "./forms/PollFields"
 import { RecentMatchesFields } from "./forms/RecentMatchesFields"
 import { Switch } from "./ui/switch"
+import { Label } from "./ui/label"
 
 const formSchema = z.object({
   tournament: z.string().min(1, "Tournament is required"),
