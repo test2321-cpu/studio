@@ -142,7 +142,7 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
       data.recentMatches = [];
     }
     if (!hasHeadToHead) {
-      data.headToHead = undefined;
+      delete (data as Partial<FormValues>).headToHead;
     }
     onSubmitForm(data)
   }
