@@ -122,7 +122,7 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
 
   function onSubmit(data: FormValues) {
     if (!hasPlayingXI) {
-        data.playingXI = [];
+        delete (data as Partial<FormValues>).playingXI;
     } else {
         const team1Name = form.getValues("teams.0.name");
         const team2Name = form.getValues("teams.1.name");
@@ -139,7 +139,7 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
         }
     }
      if (!hasRecentMatches) {
-      data.recentMatches = [];
+      delete (data as Partial<FormValues>).recentMatches;
     }
     if (!hasHeadToHead) {
       delete (data as Partial<FormValues>).headToHead;
