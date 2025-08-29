@@ -14,8 +14,9 @@ import { CountdownTimer } from '@/components/countdown-timer';
 import { getDynamicMatchStatus } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { getMatchById } from '@/services/matches';
+import { getMatchById, addVoteToMatch, onMatchUpdate } from '@/services/matches';
 import { useParams } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
 const TeamDisplay = ({ team }: { team: MatchTeam }) => (
     <div className="flex items-center text-3xl md:text-5xl font-bold gap-4">
@@ -95,25 +96,21 @@ export default function MatchPage() {
     const [loading, setLoading] = useState(true);
     const [isClient, setIsClient] = useState(false);
     const [dynamicStatus, setDynamicStatus] = useState<Match['status'] | undefined>();
+    const { toast } = useToast();
 
     useEffect(() => {
         setIsClient(true);
         if (!matchId) return;
 
-        const fetchMatch = async () => {
-            try {
-                const match = await getMatchById(matchId);
-                setCurrentMatch(match);
-                if (match) {
-                    setDynamicStatus(getDynamicMatchStatus(match));
-                }
-            } catch (error) {
-                console.error("Failed to fetch match:", error);
-            } finally {
-                setLoading(false);
+        const unsubscribe = onMatchUpdate(matchId, (match) => {
+            setCurrentMatch(match);
+            if (match) {
+                setDynamicStatus(getDynamicMatchStatus(match));
             }
-        };
-        fetchMatch();
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
     }, [matchId]);
 
     useEffect(() => {
@@ -124,6 +121,17 @@ export default function MatchPage() {
             return () => clearInterval(interval);
         }
     }, [currentMatch]);
+    
+    const handleVote = async (team: 'teamA' | 'teamB') => {
+        if (!currentMatch) return;
+        try {
+            await addVoteToMatch(currentMatch.id, team);
+            toast({ title: "Success", description: "Your vote has been counted!" });
+        } catch (error) {
+            console.error("Failed to vote:", error);
+            toast({ variant: "destructive", title: "Error", description: "Failed to cast your vote." });
+        }
+    };
 
 
     if (loading || !isClient) {
@@ -155,8 +163,10 @@ export default function MatchPage() {
     const { details, poll, recentMatches, playingXI, headToHead } = currentMatch;
     const teams = { a: currentMatch.teams[0], b: currentMatch.teams[1] };
     
-    const totalVotes = (poll?.teamA_votes || 0) + (poll?.teamB_votes || 0);
-    const teamAPercentage = totalVotes > 0 ? Math.round(((poll?.teamA_votes || 0) / totalVotes) * 100) : 0;
+    const teamAVotes = parseInt(poll?.teamA_votes || '0', 10);
+    const teamBVotes = parseInt(poll?.teamB_votes || '0', 10);
+    const totalVotes = teamAVotes + teamBVotes;
+    const teamAPercentage = totalVotes > 0 ? Math.round((teamAVotes / totalVotes) * 100) : 0;
     const teamBPercentage = totalVotes > 0 ? 100 - teamAPercentage : 0;
 
 
@@ -188,7 +198,11 @@ export default function MatchPage() {
                                 <div className="bg-amber-100 text-amber-800 inline-block px-4 py-1 rounded-full text-sm font-semibold mb-3">
                                     {dynamicStatus === 'Live' ? 'Live' : 'Match Ended'}
                                 </div>
-                                {currentMatch.result && <p className="text-lg text-muted-foreground">{currentMatch.result}</p>}
+                                {currentMatch.result ? (
+                                    <p className="text-lg text-muted-foreground">{currentMatch.result}</p>
+                                ): (
+                                     <p className="text-lg text-muted-foreground">Stay tune.</p>
+                                )}
                             </>
                         )}
                     </div>
@@ -212,21 +226,21 @@ export default function MatchPage() {
                                             <div>
                                                 <div className="flex justify-between mb-1 text-sm">
                                                     <span>{teams.a.name}</span>
-                                                    <span>{teamAPercentage}% ({poll.teamA_votes || 0})</span>
+                                                    <span>{teamAPercentage}% ({teamAVotes})</span>
                                                 </div>
                                                 <Progress value={teamAPercentage} className="h-2" />
                                             </div>
                                             <div>
                                                 <div className="flex justify-between mb-1 text-sm">
                                                     <span>{teams.b.name}</span>
-                                                    <span>{teamBPercentage}% ({poll.teamB_votes || 0})</span>
+                                                    <span>{teamBPercentage}% ({teamBVotes})</span>
                                                 </div>
                                                 <Progress value={teamBPercentage} className="h-2" />
                                             </div>
                                         </div>
                                         <div className="flex gap-4 mt-6">
-                                            <Button className="w-full" variant="outline"><Check className="mr-2 h-4 w-4" /> Vote {teams.a.name}</Button>
-                                            <Button className="w-full" variant="outline"><Check className="mr-2 h-4 w-4" /> Vote {teams.b.name}</Button>
+                                            <Button className="w-full" variant="outline" onClick={() => handleVote('teamA')}><Check className="mr-2 h-4 w-4" /> Vote {teams.a.name}</Button>
+                                            <Button className="w-full" variant="outline" onClick={() => handleVote('teamB')}><Check className="mr-2 h-4 w-4" /> Vote {teams.b.name}</Button>
                                         </div>
                                     </CardContent>
                                 </Card>

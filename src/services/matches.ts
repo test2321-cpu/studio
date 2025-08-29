@@ -1,6 +1,6 @@
 
 import { db } from '@/lib/firebase';
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, DocumentData, Timestamp } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, DocumentData, Timestamp, onSnapshot, increment } from 'firebase/firestore';
 import type { Match } from '@/lib/types';
 
 function getCombinedDateTime(date: string, time: string): Date {
@@ -55,6 +55,43 @@ export async function getMatchById(id: string): Promise<Match | null> {
     }
 }
 
+// Listen for real-time updates to a match
+export function onMatchUpdate(id: string, callback: (match: Match | null) => void): () => void {
+    const matchDocRef = doc(db, 'matches', id);
+    const unsubscribe = onSnapshot(matchDocRef, (doc) => {
+        if (doc.exists()) {
+            callback(processMatchDoc(doc));
+        } else {
+            callback(null);
+        }
+    });
+    return unsubscribe;
+}
+
+// Add a vote to a team in a match
+export async function addVoteToMatch(id: string, team: 'teamA' | 'teamB'): Promise<void> {
+    const matchDocRef = doc(db, 'matches', id);
+    const fieldToUpdate = team === 'teamA' ? 'poll.teamA_votes' : 'poll.teamB_votes';
+    
+    // We need to convert the string to a number for increment,
+    // but Firestore increment works on number fields.
+    // The poll votes are stored as strings, so we will read, increment, and write back.
+    // This is not atomic, but for a simple poll it's acceptable. For a critical system,
+    // you would use a transaction or a Cloud Function.
+    const matchSnap = await getDoc(matchDocRef);
+    if (matchSnap.exists()) {
+        const data = matchSnap.data();
+        const currentVotesStr = team === 'teamA' ? data.poll?.teamA_votes : data.poll?.teamB_votes;
+        const currentVotes = parseInt(currentVotesStr || '0', 10);
+        const newVotes = currentVotes + 1;
+
+        await updateDoc(matchDocRef, {
+            [fieldToUpdate]: String(newVotes)
+        });
+    }
+}
+
+
 // Recursively remove undefined, null, or empty string properties from an object
 const cleanObject = (obj: any): any => {
     if (Array.isArray(obj)) {
@@ -68,7 +105,14 @@ const cleanObject = (obj: any): any => {
                 if (value === undefined || value === '') {
                     return acc;
                 }
-                acc[key] = (value && typeof value === 'object') ? cleanObject(value) : value;
+                if (value && typeof value === 'object') {
+                  const cleaned = cleanObject(value);
+                  if (Object.keys(cleaned).length > 0) {
+                     acc[key] = cleaned;
+                  }
+                } else if (value !== undefined) {
+                   acc[key] = value;
+                }
                 return acc;
             },
             {} as { [key: string]: any }

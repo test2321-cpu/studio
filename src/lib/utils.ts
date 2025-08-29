@@ -12,6 +12,10 @@ function getCombinedDateTime(date: string, time: string): Date {
 }
 
 export const getDynamicMatchStatus = (match: Match): Match['status'] => {
+  if (match.status === 'completed') {
+    return 'Recent';
+  }
+
   const now = new Date().getTime();
   const matchDateTime = getCombinedDateTime(match.start_date, match.start_time).getTime();
   
