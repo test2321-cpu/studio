@@ -101,7 +101,7 @@ export default function AdminMatchesPage() {
                                         <TableRow key={match.id}>
                                             <TableCell className="font-medium">{match.tournament}</TableCell>
                                             <TableCell>{match.teams[0].name} vs {match.teams[1].name}</TableCell>
-                                            <TableCell>{match.date} at {match.time}</TableCell>
+                                            <TableCell>{match.start_date} at {match.start_time}</TableCell>
                                             <TableCell>{match.status}</TableCell>
                                             <TableCell className="text-right">
                                                 <Button asChild variant="ghost" size="icon">

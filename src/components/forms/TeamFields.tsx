@@ -31,6 +31,17 @@ export function TeamFields({ control }: TeamFieldsProps) {
               </FormItem>
             )}
           />
+           <FormField
+            control={control}
+            name={`teams.${index}.logo`}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Team Logo URL (Optional)</FormLabel>
+                <FormControl><Input placeholder="https://example.com/logo.png" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={control}
             name={`teams.${index}.flag`}

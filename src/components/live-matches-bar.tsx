@@ -57,7 +57,7 @@ const MatchItem = ({ match, isLast }: { match: Match, isLast: boolean }) => {
         <Card className="p-4 shadow-sm border min-w-[300px] md:min-w-[320px]">
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs text-muted-foreground font-semibold">
-              {match.tournament} &bull; {getMatchDate(match.date)}
+              {match.tournament} &bull; {getMatchDate(match.start_date)}
             </p>
             {getStatusBadge(dynamicStatus)}
           </div>
@@ -75,7 +75,7 @@ const MatchItem = ({ match, isLast }: { match: Match, isLast: boolean }) => {
           </div>
           {dynamicStatus === 'Upcoming' ? (
             <div className="mt-3">
-              <CountdownTimer targetDate={`${match.date}T${match.time}`} />
+              <CountdownTimer targetDate={`${match.start_date}T${match.start_time}`} />
             </div>
           ) : (
             <p className="text-xs text-primary mt-3">
@@ -145,5 +145,3 @@ function LiveMatchesBarInternal() {
 }
 
 export { LiveMatchesBarInternal as LiveMatchesBar };
-
-    

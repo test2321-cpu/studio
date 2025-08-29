@@ -87,7 +87,7 @@ function MatchCardInternal({ match }: { match: Match }) {
                     {getStatusBadge(dynamicStatus)}
                 </div>
                  <p className="text-xs text-muted-foreground pt-1">
-                    {getMatchDate(match.date)}
+                    {getMatchDate(match.start_date)}
                 </p>
             </CardHeader>
             <CardContent className="flex-grow space-y-2 text-sm">
@@ -105,7 +105,7 @@ function MatchCardInternal({ match }: { match: Match }) {
             <CardFooter>
                  {dynamicStatus === 'Upcoming' ? (
                     <div className="w-full">
-                      <CountdownTimer targetDate={`${match.date}T${match.time}`} />
+                      <CountdownTimer targetDate={`${match.start_date}T${match.start_time}`} />
                     </div>
                   ) : (
                     <p className="text-xs text-primary">
@@ -119,5 +119,3 @@ function MatchCardInternal({ match }: { match: Match }) {
 }
 
 export { MatchCardInternal as MatchCard };
-
-    

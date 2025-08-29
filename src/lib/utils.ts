@@ -13,7 +13,7 @@ function getCombinedDateTime(date: string, time: string): Date {
 
 export const getDynamicMatchStatus = (match: Match): Match['status'] => {
   const now = new Date().getTime();
-  const matchDateTime = getCombinedDateTime(match.date, match.time).getTime();
+  const matchDateTime = getCombinedDateTime(match.start_date, match.start_time).getTime();
   
   // A typical match lasts about 3.5 hours for T20, 7-8 for ODI
   // We'll use a 4-hour window for simplicity
@@ -28,5 +28,3 @@ export const getDynamicMatchStatus = (match: Match): Match['status'] => {
     return 'Recent';
   }
 };
-
-    

@@ -149,7 +149,7 @@ export default function MatchPage() {
             <main className="flex-grow bg-gray-50/50">
                 <SectionWrapper className="bg-card border-b py-6 md:py-8">
                     <div className="text-center">
-                        <p className="text-sm text-muted-foreground">{currentMatch.date}</p>
+                        <p className="text-sm text-muted-foreground">{currentMatch.start_date}</p>
                         <h1 className="text-xl md:text-2xl font-bold mt-1">{currentMatch.tournament}</h1>
                         <p className="text-sm text-muted-foreground mt-1">{details?.venue}</p>
                     </div>
@@ -164,7 +164,7 @@ export default function MatchPage() {
                         {dynamicStatus === 'Upcoming' ? (
                             <div className="flex flex-col items-center gap-2 mb-3">
                                 <span className="text-sm font-semibold text-muted-foreground">Match Starts In</span>
-                                <CountdownTimer targetDate={`${currentMatch.date}T${currentMatch.time}`} />
+                                <CountdownTimer targetDate={`${currentMatch.start_date}T${currentMatch.start_time}`} />
                             </div>
                         ) : (
                             <>
@@ -280,7 +280,7 @@ export default function MatchPage() {
                                             <MatchInfo label="Season" value={details?.season} />
                                             <MatchInfo label="Format" value={details?.format} />
                                             <MatchInfo label="Venue" value={details?.venue} />
-                                            <MatchInfo label="Match Date" value={currentMatch.date} />
+                                            <MatchInfo label="Match Date" value={currentMatch.start_date} />
                                         </CardContent>
                                     </Card>
                                 </div>

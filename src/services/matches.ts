@@ -15,14 +15,17 @@ function processMatchDoc(doc: DocumentData): Match {
     id: doc.id,
     tournament: data.tournament,
     teams: data.teams,
-    date: data.date, // Keep as YYYY-MM-DD string
-    time: data.time, // Keep as HH:MM string
+    start_date: data.start_date, // Keep as YYYY-MM-DD string
+    start_time: data.start_time, // Keep as HH:MM string
     status: data.status,
     result: data.result || '',
+    tournamentLogo: data.tournamentLogo,
+    end_date: data.end_date,
+    end_time: data.end_time,
   };
 
   const now = new Date();
-  const matchDateTime = getCombinedDateTime(match.date, match.time);
+  const matchDateTime = getCombinedDateTime(match.start_date, match.start_time);
 
   if (match.status !== 'Recent') {
       if (now > matchDateTime) {
@@ -41,8 +44,8 @@ export async function getMatches(): Promise<Match[]> {
   const matchesSnapshot = await getDocs(matchesCol);
   const matchesList = matchesSnapshot.docs.map(processMatchDoc);
   return matchesList.sort((a, b) => {
-    const dateA = getCombinedDateTime(a.date, a.time);
-    const dateB = getCombinedDateTime(b.date, b.time);
+    const dateA = getCombinedDateTime(a.start_date, a.start_time);
+    const dateB = getCombinedDateTime(b.start_date, b.start_time);
     return dateB.getTime() - dateA.getTime();
   });
 }

@@ -10,6 +10,7 @@ export interface MatchTeam {
     name: string;
     flag: string;
     score?: string;
+    logo?: string;
 }
 
 export interface Player {
@@ -52,9 +53,12 @@ export interface Poll {
 export interface Match {
   id: string; // Firestore document ID
   tournament: string;
+  tournamentLogo?: string;
   teams: [MatchTeam, MatchTeam];
-  date: string; // Stored as 'YYYY-MM-DD'
-  time: string; // Stored as 'HH:MM'
+  start_date: string; // Stored as 'YYYY-MM-DD'
+  start_time: string; // Stored as 'HH:MM'
+  end_date?: string;
+  end_time?: string;
   status: 'Upcoming' | 'Live' | 'Recent' | 'completed' | 'upcoming';
   result?: string;
 

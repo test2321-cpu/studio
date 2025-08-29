@@ -70,6 +70,10 @@ export default function EditMatchPage({ params }: { params: { id: string } }) {
     // Convert match data to form-compatible default values
     const defaultValues: FormValues = {
         ...match,
+        start_date: match.start_date,
+        start_time: match.start_time,
+        end_date: match.end_date || "",
+        end_time: match.end_time || "",
         status: match.status as 'upcoming' | 'live' | 'completed',
         poll: {
             teamA_votes: String(match.poll?.teamA_votes || 0),

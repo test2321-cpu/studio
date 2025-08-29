@@ -23,15 +23,19 @@ import { Label } from "./ui/label"
 
 const formSchema = z.object({
   tournament: z.string().min(1, "Tournament is required"),
+  tournamentLogo: z.string().url().optional().or(z.literal('')),
   teams: z.array(
     z.object({
       name: z.string().min(1, "Team name is required"),
       flag: z.string().min(1, "Flag is required"),
       score: z.string().optional(),
+      logo: z.string().url().optional().or(z.literal('')),
     })
   ).length(2, "Two teams are required"),
-  date: z.string().min(1, "Date is required"),
-  time: z.string().min(1, "Time is required"),
+  start_date: z.string().min(1, "Start date is required"),
+  start_time: z.string().min(1, "Start time is required"),
+  end_date: z.string().optional(),
+  end_time: z.string().optional(),
   status: z.string().min(1, "Status is required"),
   result: z.string().optional(),
   playingXI: z.array(
@@ -103,8 +107,10 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
         { name: "", flag: "", score: "" },
         { name: "", flag: "", score: "" },
       ],
-      date: "",
-      time: "",
+      start_date: "",
+      start_time: "",
+      end_date: "",
+      end_time: "",
       status: "upcoming",
       result: "",
       playingXI: [],
@@ -166,24 +172,48 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
                   <FormMessage />
                 </FormItem>
               )}/>
+              <FormField control={form.control} name="tournamentLogo" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tournament Logo URL (Optional)</FormLabel>
+                  <FormControl><Input placeholder="https://example.com/logo.png" {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}/>
               {/* Teams */}
               <TeamFields control={form.control} />
-              {/* Date */}
-              <FormField control={form.control} name="date" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Date</FormLabel>
-                  <FormControl><Input type="date" {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}/>
-              {/* Time */}
-              <FormField control={form.control} name="time" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Time</FormLabel>
-                  <FormControl><Input type="time" {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}/>
+              {/* Date & Time */}
+               <div className="grid grid-cols-2 gap-6">
+                  <FormField control={form.control} name="start_date" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Start Date</FormLabel>
+                      <FormControl><Input type="date" {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}/>
+                  <FormField control={form.control} name="start_time" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Start Time</FormLabel>
+                      <FormControl><Input type="time" {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}/>
+               </div>
+                <div className="grid grid-cols-2 gap-6">
+                  <FormField control={form.control} name="end_date" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>End Date (Optional)</FormLabel>
+                      <FormControl><Input type="date" {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}/>
+                  <FormField control={form.control} name="end_time" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>End Time (Optional)</FormLabel>
+                      <FormControl><Input type="time" {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}/>
+               </div>
               {/* Status */}
               <FormField
                 control={form.control}
@@ -192,11 +222,9 @@ export function MatchForm({ isEditing = false, defaultValues, onSubmitForm }: Ma
                   <FormItem>
                     <FormLabel>Status</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                      </FormControl>
+                       <FormControl>
+                        <SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger>
+                       </FormControl>
                       <SelectContent>
                         {statusOptions.map(opt => (
                           <SelectItem key={opt} value={opt}>{opt}</SelectItem>
