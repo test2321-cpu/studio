@@ -46,7 +46,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
                 />
             </div>
             <div 
-              className="prose prose-lg dark:prose-invert max-w-none text-muted-foreground space-y-4"
+              className="prose prose-lg dark:prose-invert max-w-none"
               dangerouslySetInnerHTML={{ __html: article.content }}
             />
           </article>
